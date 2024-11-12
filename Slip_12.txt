@@ -1,0 +1,194 @@
+### Q. 1: Java Program to Implement Decorator Pattern for Interface Car to Define the `assemble()` Method and Then Decorate It to Sports Car and Luxury Car
+
+The **Decorator Pattern** is a structural design pattern that allows adding new functionality to an object dynamically without altering its structure. In this case, we will define a `Car` interface with the `assemble()` method and then decorate it with additional functionalities for **SportsCar** and **LuxuryCar**.
+
+#### Steps for Implementation:
+1. **Create the `Car` interface** with the `assemble()` method.
+2. **Create a `BasicCar` class** that implements the `Car` interface.
+3. **Create abstract decorator class** to add functionality.
+4. **Create specific decorators** like `SportsCar` and `LuxuryCar`.
+5. **Test the decorated cars**.
+
+---
+
+#### Java Code Implementation:
+
+**1. `Car` Interface**
+
+```java
+interface Car {
+    void assemble();
+}
+```
+
+**2. `BasicCar` Class**
+
+```java
+class BasicCar implements Car {
+    @Override
+    public void assemble() {
+        System.out.println("Basic Car Assembly");
+    }
+}
+```
+
+**3. `CarDecorator` Class (Abstract Decorator)**
+
+```java
+abstract class CarDecorator implements Car {
+    protected Car decoratedCar;
+
+    public CarDecorator(Car car) {
+        this.decoratedCar = car;
+    }
+
+    public void assemble() {
+        this.decoratedCar.assemble();
+    }
+}
+```
+
+**4. `SportsCar` Decorator**
+
+```java
+class SportsCar extends CarDecorator {
+    public SportsCar(Car car) {
+        super(car);
+    }
+
+    @Override
+    public void assemble() {
+        decoratedCar.assemble();
+        System.out.println("Adding features of Sports Car");
+    }
+}
+```
+
+**5. `LuxuryCar` Decorator**
+
+```java
+class LuxuryCar extends CarDecorator {
+    public LuxuryCar(Car car) {
+        super(car);
+    }
+
+    @Override
+    public void assemble() {
+        decoratedCar.assemble();
+        System.out.println("Adding features of Luxury Car");
+    }
+}
+```
+
+**6. Main Class to Test the Decorator Pattern**
+
+```java
+public class DecoratorPatternTest {
+    public static void main(String[] args) {
+        // Create a basic car
+        Car sportsCar = new SportsCar(new BasicCar());
+        sportsCar.assemble();
+        System.out.println("\n*****");
+
+        // Create a luxury car
+        Car sportsLuxuryCar = new LuxuryCar(new SportsCar(new BasicCar()));
+        sportsLuxuryCar.assemble();
+    }
+}
+```
+
+#### Explanation:
+1. **`Car` Interface** defines the `assemble()` method that each car class must implement.
+2. **`BasicCar`** is a simple implementation of the `Car` interface, which represents the basic features of a car.
+3. **`CarDecorator`** is an abstract class that implements the `Car` interface and holds a reference to a `Car` object, delegating the `assemble()` call to it. The decorator adds additional functionality.
+4. **`SportsCar`** and **`LuxuryCar`** are concrete decorators that add additional features to the car.
+5. In the **`DecoratorPatternTest`** class, we create a basic car and decorate it with sports and luxury features.
+
+#### Output Example:
+```
+Basic Car Assembly
+*****
+Basic Car Assembly
+Adding features of Sports Car
+Adding features of Luxury Car
+```
+
+---
+
+### Q. 2: Write a Program to Sense the Available Networks Using Arduino
+
+To sense the available networks using Arduino, you typically need to use a Wi-Fi module like the **ESP8266** or **ESP32**. These modules can be programmed to scan for available Wi-Fi networks and list them.
+
+Here is an example of how to use the **ESP8266** module to scan for Wi-Fi networks:
+
+#### Steps for Setup:
+1. **Connect the ESP8266 module to the Arduino** (or use an ESP8266/ESP32 board directly).
+2. **Install the necessary libraries** in the Arduino IDE for ESP8266 (e.g., the `ESP8266WiFi` library).
+3. **Write the Arduino program to scan for available networks**.
+
+#### Arduino Code:
+
+```cpp
+#include <ESP8266WiFi.h>
+
+void setup() {
+  // Start the Serial Monitor
+  Serial.begin(115200);
+  delay(10);
+  
+  // Connect to Wi-Fi in station mode
+  WiFi.mode(WIFI_STA);
+  Serial.println("Scanning for available networks...");
+  
+  // Start scanning for networks
+  int n = WiFi.scanNetworks();
+  
+  // Print the results
+  if (n == 0) {
+    Serial.println("No networks found");
+  } else {
+    Serial.println("Available networks:");
+    for (int i = 0; i < n; i++) {
+      // Print SSID (network name) and RSSI (signal strength)
+      Serial.print(i + 1);
+      Serial.print(": ");
+      Serial.print(WiFi.SSID(i));
+      Serial.print(" | Signal Strength (RSSI): ");
+      Serial.println(WiFi.RSSI(i));
+      delay(10);
+    }
+  }
+}
+
+void loop() {
+  // No repeated actions needed in loop
+}
+```
+
+#### Explanation:
+1. **`WiFi.mode(WIFI_STA)`** sets the Wi-Fi mode to station mode (client mode), meaning the module will search for networks.
+2. **`WiFi.scanNetworks()`** starts the scanning process and returns the number of networks found.
+3. The program prints the SSID (network name) and signal strength (RSSI) for each available network.
+4. The `Serial.begin(115200)` and `Serial.println()` methods are used to output the scan results to the Serial Monitor.
+
+#### Instructions for Uploading:
+1. **Select the correct board and port**: In the Arduino IDE, choose the ESP8266 board under **Tools > Board** (e.g., `NodeMCU 1.0 (ESP-12E Module)`), and select the appropriate port.
+2. **Upload the code**: Upload the sketch to your ESP8266 module. After uploading, open the Serial Monitor in the Arduino IDE to see the available networks.
+
+#### Output Example in Serial Monitor:
+```
+Scanning for available networks...
+Available networks:
+1: MyWiFiNetwork | Signal Strength (RSSI): -65
+2: GuestNetwork | Signal Strength (RSSI): -70
+3: MyHomeNetwork | Signal Strength (RSSI): -60
+```
+
+---
+
+### Explanation of the Process:
+1. The **ESP8266** module is used to scan for available Wi-Fi networks by setting it in station mode and using `WiFi.scanNetworks()`.
+2. It lists all the networks with their SSID and signal strength, allowing you to see what networks are within range.
+3. This is a simple program that can be modified to connect to a specific network or perform other network-related tasks.
+
+Let me know if you need further clarification or assistance!

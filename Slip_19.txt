@@ -1,0 +1,288 @@
+### Q. 1: Java Program to Implement Factory Method for Pizza Store
+
+The **Factory Method Pattern** is a creational design pattern that defines an interface for creating an object, but allows subclasses to alter the type of objects that will be created. In this case, we will implement a Pizza Store that uses a factory method to create different varieties of pizzas like `NYStyleCheesePizza` and `ChicagoStyleCheesePizza`.
+
+#### Java Code Implementation:
+
+**1. Pizza (Abstract Product)**: This class defines the basic structure for pizza, with methods like `prepare()`, `bake()`, `cut()`, and `box()` that will be implemented by the subclasses.
+
+```java
+abstract class Pizza {
+    String name;
+    String dough;
+    String sauce;
+
+    // Abstract methods for pizza preparation
+    abstract void prepare();
+    abstract void bake();
+    abstract void cut();
+    abstract void box();
+
+    // Getter method to retrieve the pizza name
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+**2. Concrete Pizza Classes**: These are specific types of pizzas (e.g., `NYStyleCheesePizza` and `ChicagoStyleCheesePizza`).
+
+```java
+class NYStyleCheesePizza extends Pizza {
+    public NYStyleCheesePizza() {
+        name = "NY Style Sauce and Cheese Pizza";
+        dough = "Thin Crust Dough";
+        sauce = "Marinara Sauce";
+    }
+
+    @Override
+    void prepare() {
+        System.out.println("Preparing " + name);
+    }
+
+    @Override
+    void bake() {
+        System.out.println("Baking " + name);
+    }
+
+    @Override
+    void cut() {
+        System.out.println("Cutting " + name);
+    }
+
+    @Override
+    void box() {
+        System.out.println("Boxing " + name);
+    }
+}
+
+class ChicagoStyleCheesePizza extends Pizza {
+    public ChicagoStyleCheesePizza() {
+        name = "Chicago Style Deep Dish Cheese Pizza";
+        dough = "Extra Thick Crust Dough";
+        sauce = "Plum Tomato Sauce";
+    }
+
+    @Override
+    void prepare() {
+        System.out.println("Preparing " + name);
+    }
+
+    @Override
+    void bake() {
+        System.out.println("Baking " + name);
+    }
+
+    @Override
+    void cut() {
+        System.out.println("Cutting " + name);
+    }
+
+    @Override
+    void box() {
+        System.out.println("Boxing " + name);
+    }
+}
+```
+
+**3. PizzaStore (Abstract Creator)**: This is an abstract class that defines the factory method `createPizza()` which is implemented by concrete stores.
+
+```java
+abstract class PizzaStore {
+    public Pizza orderPizza(String type) {
+        Pizza pizza;
+
+        // Use factory method to create a pizza
+        pizza = createPizza(type);
+
+        pizza.prepare();
+        pizza.bake();
+        pizza.cut();
+        pizza.box();
+
+        return pizza;
+    }
+
+    // Factory method to create the pizza
+    protected abstract Pizza createPizza(String type);
+}
+```
+
+**4. Concrete Pizza Store Classes**: These concrete stores implement the `createPizza()` method to create specific types of pizza.
+
+```java
+class NYPizzaStore extends PizzaStore {
+    @Override
+    protected Pizza createPizza(String type) {
+        Pizza pizza = null;
+
+        if (type.equals("cheese")) {
+            pizza = new NYStyleCheesePizza();
+        }
+        // You can add more pizza types here
+
+        return pizza;
+    }
+}
+
+class ChicagoPizzaStore extends PizzaStore {
+    @Override
+    protected Pizza createPizza(String type) {
+        Pizza pizza = null;
+
+        if (type.equals("cheese")) {
+            pizza = new ChicagoStyleCheesePizza();
+        }
+        // You can add more pizza types here
+
+        return pizza;
+    }
+}
+```
+
+**5. Client Class to Test the Pizza Store and Factory Method**
+
+```java
+public class PizzaStoreTest {
+    public static void main(String[] args) {
+        PizzaStore nyStore = new NYPizzaStore();
+        Pizza pizza1 = nyStore.orderPizza("cheese");
+
+        System.out.println("Ordered a " + pizza1.getName() + "\n");
+
+        PizzaStore chicagoStore = new ChicagoPizzaStore();
+        Pizza pizza2 = chicagoStore.orderPizza("cheese");
+
+        System.out.println("Ordered a " + pizza2.getName());
+    }
+}
+```
+
+#### Explanation:
+1. **Pizza (Abstract Product)**: This class defines the methods `prepare()`, `bake()`, `cut()`, and `box()` that all pizza types must implement. It also contains common attributes like `name`, `dough`, and `sauce`.
+2. **Concrete Pizza Classes**: These are the actual pizzas like `NYStyleCheesePizza` and `ChicagoStyleCheesePizza`, which implement the abstract methods from `Pizza`.
+3. **PizzaStore (Abstract Creator)**: This class defines the `orderPizza()` method which delegates the creation of pizzas to the concrete stores via the `createPizza()` factory method.
+4. **Concrete Pizza Stores**: These stores, `NYPizzaStore` and `ChicagoPizzaStore`, implement the `createPizza()` method to return specific pizza types based on input.
+5. **Client Class**: The `PizzaStoreTest` class demonstrates the usage of the `PizzaStore` and the factory method to order pizzas.
+
+#### Output:
+```
+Preparing NY Style Sauce and Cheese Pizza
+Baking NY Style Sauce and Cheese Pizza
+Cutting NY Style Sauce and Cheese Pizza
+Boxing NY Style Sauce and Cheese Pizza
+Ordered a NY Style Sauce and Cheese Pizza
+
+Preparing Chicago Style Deep Dish Cheese Pizza
+Baking Chicago Style Deep Dish Cheese Pizza
+Cutting Chicago Style Deep Dish Cheese Pizza
+Boxing Chicago Style Deep Dish Cheese Pizza
+Ordered a Chicago Style Deep Dish Cheese Pizza
+```
+
+---
+
+### Q. 2: Start Raspberry Pi and Execute Various Linux Commands in Command Terminal
+
+You can start your **Raspberry Pi** and execute various Linux commands from the **command terminal** window. Below is an explanation and the usage of each command you mentioned:
+
+1. **`ls`**: List the files and directories in the current directory.
+   ```bash
+   ls
+   ```
+
+2. **`cd`**: Change the directory.
+   ```bash
+   cd /path/to/directory
+   ```
+
+3. **`touch`**: Create a new empty file.
+   ```bash
+   touch newfile.txt
+   ```
+
+4. **`mv`**: Move or rename files.
+   ```bash
+   mv oldfile.txt newfile.txt
+   ```
+
+5. **`rm`**: Remove files or directories.
+   ```bash
+   rm file.txt
+   ```
+
+6. **`man`**: Display the manual page for a command.
+   ```bash
+   man ls
+   ```
+
+7. **`mkdir`**: Create a new directory.
+   ```bash
+   mkdir newdirectory
+   ```
+
+8. **`rmdir`**: Remove an empty directory.
+   ```bash
+   rmdir directoryname
+   ```
+
+9. **`tar`**: Create or extract compressed archive files.
+   ```bash
+   tar -cvf archive.tar.gz /path/to/directory
+   ```
+
+10. **`gzip`**: Compress files.
+    ```bash
+    gzip filename
+    ```
+
+11. **`cat`**: Display the contents of a file.
+    ```bash
+    cat file.txt
+    ```
+
+12. **`more`**: View the contents of a file (one screen at a time).
+    ```bash
+    more file.txt
+    ```
+
+13. **`less`**: Similar to `more`, but with backward navigation.
+    ```bash
+    less file.txt
+    ```
+
+14. **`ps`**: Display the current processes.
+    ```bash
+    ps aux
+    ```
+
+15. **`sudo`**: Execute a command as a superuser (root).
+    ```bash
+    sudo apt-get update
+    ```
+
+16. **`cron`**: Schedule tasks to run at specific times.
+    ```bash
+    crontab -e
+    ```
+
+17. **`chown`**: Change file ownership.
+    ```bash
+    sudo chown user:group file.txt
+    ```
+
+18. **`chgrp`**: Change the group ownership of a file.
+    ```bash
+    sudo chgrp group file.txt
+    ```
+
+19. **`ping`**: Test network connectivity to a host.
+    ```bash
+    ping www.google.com
+    ```
+
+You can open the terminal window in your Raspberry Pi and execute these commands to interact with your system. If you have any specific questions about the commands or need further details, feel free to ask!

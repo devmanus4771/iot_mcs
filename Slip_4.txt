@@ -1,0 +1,149 @@
+Got it! From now on, I will provide answers with detailed steps specifically for running the programs in **Proteus Simulation software**. 
+
+### **Slip 4:**
+
+### **Q.1 Java Program - Factory Method for Pizza Store**
+
+#### **Code:**
+```java
+// Pizza interface
+interface Pizza {
+    void prepare();
+    void bake();
+    void cut();
+}
+
+// Concrete Cheese Pizza class
+class CheesePizza implements Pizza {
+    public void prepare() {
+        System.out.println("Preparing Cheese Pizza");
+    }
+
+    public void bake() {
+        System.out.println("Baking Cheese Pizza");
+    }
+
+    public void cut() {
+        System.out.println("Cutting Cheese Pizza");
+    }
+}
+
+// Pizza Store with Factory Method
+abstract class PizzaStore {
+    public void orderPizza() {
+        Pizza pizza = createPizza();
+        pizza.prepare();
+        pizza.bake();
+        pizza.cut();
+    }
+
+    protected abstract Pizza createPizza();
+}
+
+// Concrete implementation of PizzaStore
+class CheesePizzaStore extends PizzaStore {
+    protected Pizza createPizza() {
+        return new CheesePizza();
+    }
+}
+
+// Main class
+public class PizzaFactoryTest {
+    public static void main(String[] args) {
+        PizzaStore store = new CheesePizzaStore();
+        store.orderPizza();
+    }
+}
+```
+
+#### **Steps to Run**:
+1. **Save the Code**:
+   - Save the file as `PizzaFactoryTest.java`.
+   
+2. **Compile and Run**:
+   - Open the terminal, navigate to the file location.
+   - Compile using: `javac PizzaFactoryTest.java`.
+   - Run using: `java PizzaFactoryTest`.
+
+3. **Output**:
+   - The program simulates ordering and preparing a Cheese Pizza:
+     ```
+     Preparing Cheese Pizza
+     Baking Cheese Pizza
+     Cutting Cheese Pizza
+     ```
+
+---
+
+### **Q.2 Arduino Program - Sense a Finger Touch using a Touch Sensor**
+
+#### **Components Required**:
+1. **Arduino UNO**.
+2. **Touch Sensor Module (e.g., TTP223)**.
+3. **LED**.
+4. **Resistor (220 ohms)**.
+5. **Proteus Simulation Software**.
+
+#### **Proteus Simulation Setup**:
+1. **Create a New Project in Proteus**:
+   - Open Proteus and start a new project.
+
+2. **Add Components**:
+   - Add `Arduino UNO`.
+   - Add a `Touch Sensor Module` (use a push button if the touch sensor is not available).
+   - Add an `LED` and a `220-ohm resistor`.
+
+3. **Wiring**:
+   - Connect the `VCC` of the Touch Sensor to `5V` on Arduino.
+   - Connect the `GND` of the Touch Sensor to `GND` on Arduino.
+   - Connect the `Output` of the Touch Sensor to digital pin `2` on Arduino.
+   - Connect the `LED` to digital pin `13` of Arduino through a `220-ohm` resistor.
+
+#### **Code:**
+```cpp
+// Define pins for touch sensor and LED
+int touchPin = 2;
+int ledPin = 13;
+
+void setup() {
+    // Initialize serial communication and set pin modes
+    Serial.begin(9600);
+    pinMode(touchPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+    // Check if the touch sensor is pressed
+    if (digitalRead(touchPin) == HIGH) {
+        Serial.println("Finger Touch Detected!");
+        digitalWrite(ledPin, HIGH); // Turn LED ON
+    } else {
+        digitalWrite(ledPin, LOW);  // Turn LED OFF
+    }
+    delay(100); // Short delay for debounce
+}
+```
+
+#### **Steps to Run in Proteus**:
+1. **Upload the Code**:
+   - Open the Arduino IDE, select `Arduino UNO` as the board, and upload the code.
+
+2. **Setup in Proteus**:
+   - Open the Proteus project and add all the components.
+   - Connect the Touch Sensor's output to pin `2` of Arduino.
+   - Connect the LED to pin `13` through a resistor.
+
+3. **Start Simulation**:
+   - Click the "Play" button in Proteus to start the simulation.
+   - Press the touch sensor (or the button in simulation).
+
+4. **Expected Output**:
+   - When the touch sensor is activated, the Serial Monitor will display:
+     ```
+     Finger Touch Detected!
+     ```
+   - The LED connected to pin `13` will light up when the touch sensor is pressed.
+
+---
+
+Let me know if you need any adjustments or when you are ready for the next slip!

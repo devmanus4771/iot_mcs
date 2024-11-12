@@ -1,0 +1,161 @@
+### **Slip 3:**
+
+### **Q.1 Java Program - Weather Station using `java.util.Observable`**
+
+#### **Code:**
+```java
+import java.util.Observable;
+import java.util.Observer;
+
+// Observable class representing WeatherData
+class WeatherData extends Observable {
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    // Method to set new weather measurements
+    public void setMeasurements(float temperature, float humidity, float pressure) {
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.pressure = pressure;
+        measurementsChanged();
+    }
+
+    // Notify observers of the change
+    public void measurementsChanged() {
+        setChanged();
+        notifyObservers();
+    }
+
+    // Getter methods for weather data
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public float getPressure() {
+        return pressure;
+    }
+}
+
+// Observer class for displaying weather updates
+class WeatherDisplay implements Observer {
+    public void update(Observable obs, Object arg) {
+        if (obs instanceof WeatherData) {
+            WeatherData weatherData = (WeatherData) obs;
+            System.out.println("Updated Weather Data:");
+            System.out.println("Temperature: " + weatherData.getTemperature() + "°C");
+            System.out.println("Humidity: " + weatherData.getHumidity() + "%");
+            System.out.println("Pressure: " + weatherData.getPressure() + " hPa");
+        }
+    }
+}
+
+// Main class to test the Weather Station
+public class WeatherStation {
+    public static void main(String[] args) {
+        WeatherData weatherData = new WeatherData();
+        WeatherDisplay display = new WeatherDisplay();
+        
+        // Add display as an observer
+        weatherData.addObserver(display);
+
+        // Simulate new weather measurements
+        weatherData.setMeasurements(25.5f, 60.0f, 1012.0f);
+        weatherData.setMeasurements(27.0f, 55.0f, 1010.0f);
+    }
+}
+```
+
+#### **Steps to Run**:
+1. **Save the Code**:
+   - Save the file as `WeatherStation.java`.
+   
+2. **Compile and Run**:
+   - Open a terminal and navigate to the directory containing the file.
+   - Compile using: `javac WeatherStation.java`.
+   - Run using: `java WeatherStation`.
+
+3. **Output**:
+   - The program will display updated weather data:
+     ```
+     Updated Weather Data:
+     Temperature: 25.5°C
+     Humidity: 60.0%
+     Pressure: 1012.0 hPa
+     Updated Weather Data:
+     Temperature: 27.0°C
+     Humidity: 55.0%
+     Pressure: 1010.0 hPa
+     ```
+
+---
+
+### **Q.2 Arduino Program - Detect Vibration using a Vibration Sensor**
+
+#### **Components Required**:
+1. **Arduino UNO**.
+2. **Vibration Sensor (SW-420 or similar)**.
+3. **LED**.
+4. **Resistor (220 ohms)**.
+5. **Proteus Simulation Software**.
+
+#### **Proteus Simulation Setup**:
+1. **Open Proteus** and create a new project.
+2. **Add Components**:
+   - Add `Arduino UNO`, `Vibration Sensor`, and an `LED`.
+3. **Wiring**:
+   - Connect the `VCC` and `GND` of the vibration sensor to `5V` and `GND` of Arduino.
+   - Connect the sensor output to `A0` of Arduino.
+   - Connect the `LED` to pin `13` of Arduino through a 220-ohm resistor to ground.
+
+#### **Code:**
+```cpp
+// Define pin for vibration sensor and LED
+int vibrationSensorPin = A0;
+int ledPin = 13;
+int sensorValue = 0;
+
+void setup() {
+    // Initialize serial communication and set pin modes
+    Serial.begin(9600);
+    pinMode(vibrationSensorPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+    // Read the sensor value
+    sensorValue = analogRead(vibrationSensorPin);
+
+    // Check if vibration is detected
+    if (sensorValue > 100) {
+        Serial.println("Vibration Detected!");
+        digitalWrite(ledPin, HIGH); // Turn LED ON
+    } else {
+        digitalWrite(ledPin, LOW);  // Turn LED OFF
+    }
+    delay(500); // Wait for half a second
+}
+```
+
+#### **Steps to Run in Proteus**:
+1. **Upload the Code**:
+   - Open the Arduino IDE, select `Arduino UNO`, and upload the code.
+   
+2. **Simulation**:
+   - In Proteus, open the project and click the "Play" button to start the simulation.
+   - If the vibration sensor detects movement, the Serial Monitor will print "Vibration Detected!" and the LED will light up.
+
+3. **Expected Output**:
+   - When the sensor detects a vibration, the Serial Monitor displays:
+     ```
+     Vibration Detected!
+     ```
+   - The LED on pin 13 will also turn on when a vibration is detected.
+
+---
+
+Let me know when you are ready for the next slip!

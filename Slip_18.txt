@@ -1,0 +1,199 @@
+### Q. 1: JAVA Program to Implement Built-in Support (`java.util.Observable`) for a Weather Station
+
+In Java, you can implement the **Observer Pattern** using the built-in `java.util.Observable` class, which allows objects (observers) to be notified when a subject (observable) changes its state. In this case, the weather station will be the observable, and the observers will be able to get updates when the weather measurements change.
+
+#### Java Code Implementation:
+
+**1. WeatherStation (Observable Class)**: This is the observable class where weather measurements such as temperature, humidity, and pressure are stored.
+
+```java
+import java.util.Observable;
+
+class WeatherStation extends Observable {
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    // Constructor
+    public WeatherStation() {
+        // Initial measurements (can be set later through methods)
+        temperature = 0.0f;
+        humidity = 0.0f;
+        pressure = 0.0f;
+    }
+
+    // Method to change weather measurements and notify observers
+    public void measurementsChanged() {
+        setChanged();        // Marks the object as changed
+        notifyObservers();   // Notifies all observers
+    }
+
+    // Setter methods to update the measurements
+    public void setMeasurements(float temperature, float humidity, float pressure) {
+        this.temperature = temperature;
+        this.humidity = humidity;
+        this.pressure = pressure;
+        measurementsChanged(); // Notify observers when measurements are changed
+    }
+
+    // Getter methods to access weather data
+    public float getTemperature() {
+        return temperature;
+    }
+
+    public float getHumidity() {
+        return humidity;
+    }
+
+    public float getPressure() {
+        return pressure;
+    }
+}
+```
+
+**2. WeatherObserver (Observer Class)**: This is the observer class that will listen to changes in the `WeatherStation` (observable) and display the weather information.
+
+```java
+import java.util.Observer;
+import java.util.Observable;
+
+class WeatherObserver implements Observer {
+    private float temperature;
+    private float humidity;
+    private float pressure;
+
+    // Constructor
+    public WeatherObserver(Observable weatherStation) {
+        weatherStation.addObserver(this);  // Add observer to the observable (weather station)
+    }
+
+    // Implement update method to react to changes in the weather data
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof WeatherStation) {
+            WeatherStation weatherStation = (WeatherStation) o;
+            this.temperature = weatherStation.getTemperature();
+            this.humidity = weatherStation.getHumidity();
+            this.pressure = weatherStation.getPressure();
+            displayWeather();
+        }
+    }
+
+    // Method to display the weather data
+    public void displayWeather() {
+        System.out.println("Current Weather:");
+        System.out.println("Temperature: " + temperature + " °C");
+        System.out.println("Humidity: " + humidity + " %");
+        System.out.println("Pressure: " + pressure + " hPa");
+    }
+}
+```
+
+**3. Main Class to Test the Weather Station and Observer**
+
+```java
+public class WeatherStationTest {
+    public static void main(String[] args) {
+        // Create a WeatherStation object
+        WeatherStation weatherStation = new WeatherStation();
+
+        // Create a WeatherObserver object and register it with the weather station
+        WeatherObserver weatherObserver = new WeatherObserver(weatherStation);
+
+        // Change weather measurements and notify observers
+        weatherStation.setMeasurements(25.5f, 65.0f, 1013.0f);  // Measurement 1
+        weatherStation.setMeasurements(30.2f, 60.5f, 1012.5f);  // Measurement 2
+        weatherStation.setMeasurements(28.0f, 70.0f, 1011.8f);  // Measurement 3
+    }
+}
+```
+
+#### Explanation:
+1. **WeatherStation (Observable)**: This class extends `Observable` and contains weather data (temperature, humidity, and pressure). The `setMeasurements()` method updates the measurements and notifies all registered observers.
+2. **WeatherObserver (Observer)**: Implements `Observer` and listens for changes in the `WeatherStation`. When a change occurs, it receives the updated weather data and displays it.
+3. **WeatherStationTest (Client)**: The main class where an instance of `WeatherStation` is created, and an instance of `WeatherObserver` is registered. It then simulates changing weather data by calling `setMeasurements()`.
+
+#### Output:
+```
+Current Weather:
+Temperature: 25.5 °C
+Humidity: 65.0 %
+Pressure: 1013.0 hPa
+Current Weather:
+Temperature: 30.2 °C
+Humidity: 60.5 %
+Pressure: 1012.5 hPa
+Current Weather:
+Temperature: 28.0 °C
+Humidity: 70.0 %
+Pressure: 1011.8 hPa
+```
+
+---
+
+### Q. 2: Arduino Program to Vary the Light Intensity of an LED Using an LDR
+
+In this program, an **LDR (Light Dependent Resistor)** will be used to vary the light intensity of an **LED**. The LDR's resistance decreases as light intensity increases. We will use an **analog input pin** to read the LDR value and adjust the **LED brightness** (connected to a PWM pin) based on the LDR value.
+
+#### Hardware Required:
+1. **LDR (Light Dependent Resistor)**
+2. **LED**
+3. **10kΩ Resistor** (for the LDR)
+4. **Arduino Board** (e.g., Arduino Uno)
+5. **Breadboard and Jumper Wires**
+
+#### Wiring:
+- **LDR**: One side of the LDR goes to **5V**, the other side goes to **A0 (analog input)**, and a **10kΩ resistor** connects the LDR side to **GND**.
+- **LED**: The positive leg (long leg) of the LED goes to **pin 9** (PWM pin) and the negative leg to **GND** through a **220Ω resistor**.
+
+#### Arduino Code:
+
+```cpp
+int ldrPin = A0;   // LDR connected to analog pin A0
+int ledPin = 9;     // LED connected to PWM pin 9
+int ldrValue = 0;   // Variable to store the LDR value
+
+void setup() {
+  pinMode(ledPin, OUTPUT);  // Set LED pin as output
+  Serial.begin(9600);       // Start serial communication for debugging
+}
+
+void loop() {
+  // Read the LDR value (0 to 1023)
+  ldrValue = analogRead(ldrPin);
+
+  // Map the LDR value (0 to 1023) to a PWM range (0 to 255)
+  int brightness = map(ldrValue, 0, 1023, 0, 255);
+
+  // Write the brightness value to the LED
+  analogWrite(ledPin, brightness);
+
+  // Print the LDR value and brightness for debugging
+  Serial.print("LDR Value: ");
+  Serial.print(ldrValue);
+  Serial.print(" -> LED Brightness: ");
+  Serial.println(brightness);
+
+  delay(100);  // Small delay for smoother adjustment
+}
+```
+
+#### Explanation:
+1. **LDR Reading**: The `analogRead(ldrPin)` reads the value from the LDR, which ranges from 0 to 1023 (representing light intensity).
+2. **Brightness Mapping**: The `map()` function maps the LDR value (0-1023) to a range suitable for PWM control of the LED (0-255).
+3. **PWM Control**: `analogWrite(ledPin, brightness)` adjusts the brightness of the LED based on the mapped value from the LDR.
+4. **Serial Output**: The LDR value and corresponding LED brightness are printed to the Serial Monitor for debugging.
+
+#### Output:
+- As the light on the LDR increases, the LED brightness decreases, and as the light decreases, the LED brightness increases.
+- The Serial Monitor shows values for LDR and LED brightness, e.g.,:
+
+```
+LDR Value: 512 -> LED Brightness: 127
+LDR Value: 256 -> LED Brightness: 63
+LDR Value: 1023 -> LED Brightness: 255
+```
+
+---
+
+Let me know if you need further assistance or clarification!

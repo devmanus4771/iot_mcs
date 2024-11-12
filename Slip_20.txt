@@ -1,0 +1,208 @@
+### Q. 1: Java Program to Implement I/O Decorator for Converting Uppercase Letters to Lowercase Letters
+
+In this scenario, we will implement the **Decorator Pattern** for I/O operations. The Decorator Pattern allows us to add additional functionality to an object dynamically. We will create a decorator that converts uppercase letters to lowercase.
+
+#### Java Code Implementation:
+
+**1. I/O Stream Interface (Component)**
+
+```java
+import java.io.*;
+
+interface Reader {
+    String read();
+}
+```
+
+**2. Concrete Reader (Concrete Component)**
+
+This class implements the `Reader` interface and provides the basic functionality of reading input from the console.
+
+```java
+class ConsoleReader implements Reader {
+    private BufferedReader reader;
+
+    public ConsoleReader() {
+        reader = new BufferedReader(new InputStreamReader(System.in));
+    }
+
+    @Override
+    public String read() {
+        try {
+            System.out.print("Enter text: ");
+            return reader.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+}
+```
+
+**3. Abstract Decorator Class**
+
+This class implements the `Reader` interface and is a base for other decorators to extend.
+
+```java
+abstract class ReaderDecorator implements Reader {
+    protected Reader wrappedReader;
+
+    public ReaderDecorator(Reader wrappedReader) {
+        this.wrappedReader = wrappedReader;
+    }
+
+    @Override
+    public String read() {
+        return wrappedReader.read();
+    }
+}
+```
+
+**4. Lowercase Decorator (Concrete Decorator)**
+
+This decorator class will convert the text read from the console to lowercase.
+
+```java
+class LowercaseReaderDecorator extends ReaderDecorator {
+
+    public LowercaseReaderDecorator(Reader wrappedReader) {
+        super(wrappedReader);
+    }
+
+    @Override
+    public String read() {
+        String text = super.read();
+        return text.toLowerCase();
+    }
+}
+```
+
+**5. Client Class to Test the Decorator**
+
+```java
+public class IOTest {
+    public static void main(String[] args) {
+        Reader reader = new ConsoleReader();  // Base reader
+        reader = new LowercaseReaderDecorator(reader);  // Decorator to convert to lowercase
+        
+        // Read and print the modified text
+        String text = reader.read();
+        System.out.println("Converted Text: " + text);
+    }
+}
+```
+
+#### Explanation:
+1. **Reader Interface**: Defines the basic `read()` method for reading data.
+2. **ConsoleReader**: Implements the `Reader` interface and provides functionality to read from the console.
+3. **ReaderDecorator**: A base decorator class that extends `Reader` and can wrap a `Reader` instance, passing along the responsibility of the `read()` method.
+4. **LowercaseReaderDecorator**: A concrete decorator that modifies the `read()` behavior to convert the input text to lowercase.
+5. **IOTest**: The client class creates a `ConsoleReader`, then decorates it with a `LowercaseReaderDecorator` to read input and convert it to lowercase.
+
+#### Output:
+
+If you input `"HELLO WORLD"`, the output will be:
+
+```
+Enter text: HELLO WORLD
+Converted Text: hello world
+```
+
+---
+
+### Q. 2: Python Programs on Raspberry Pi
+
+#### a) Read Your Name and Print Hello Message with Name
+
+```python
+name = input("Enter your name: ")
+print(f"Hello, {name}!")
+```
+
+#### b) Read Two Numbers and Print Their Sum, Difference, Product, and Division
+
+```python
+# Read two numbers from the user
+num1 = float(input("Enter the first number: "))
+num2 = float(input("Enter the second number: "))
+
+# Perform arithmetic operations
+sum_result = num1 + num2
+difference = num1 - num2
+product = num1 * num2
+
+# Handle division by zero
+if num2 != 0:
+    division = num1 / num2
+else:
+    division = "Cannot divide by zero!"
+
+# Display results
+print(f"Sum: {sum_result}")
+print(f"Difference: {difference}")
+print(f"Product: {product}")
+print(f"Division: {division}")
+```
+
+#### c) Word and Character Count of a Given String
+
+```python
+text = input("Enter a string: ")
+
+# Count words and characters
+word_count = len(text.split())
+char_count = len(text.replace(" ", ""))  # Remove spaces for character count
+
+print(f"Word count: {word_count}")
+print(f"Character count (excluding spaces): {char_count}")
+```
+
+#### d) Area of a Given Shape (Rectangle, Triangle, and Circle) Reading Shape and Appropriate Values
+
+```python
+# Function to calculate area of rectangle
+def area_rectangle(length, width):
+    return length * width
+
+# Function to calculate area of triangle
+def area_triangle(base, height):
+    return 0.5 * base * height
+
+# Function to calculate area of circle
+def area_circle(radius):
+    import math
+    return math.pi * radius * radius
+
+# Ask for the shape
+shape = input("Enter the shape (rectangle, triangle, or circle): ").lower()
+
+# Calculate area based on shape
+if shape == "rectangle":
+    length = float(input("Enter the length of the rectangle: "))
+    width = float(input("Enter the width of the rectangle: "))
+    area = area_rectangle(length, width)
+    print(f"Area of the rectangle: {area}")
+    
+elif shape == "triangle":
+    base = float(input("Enter the base of the triangle: "))
+    height = float(input("Enter the height of the triangle: "))
+    area = area_triangle(base, height)
+    print(f"Area of the triangle: {area}")
+    
+elif shape == "circle":
+    radius = float(input("Enter the radius of the circle: "))
+    area = area_circle(radius)
+    print(f"Area of the circle: {area}")
+    
+else:
+    print("Invalid shape!")
+```
+
+---
+
+### Summary:
+
+1. **Java Program**: We implemented an I/O Decorator that converts input text to lowercase using the **Decorator Pattern**.
+2. **Python Programs**: We created simple Python programs on Raspberry Pi to read user input, perform arithmetic operations, count words and characters, and calculate areas of different shapes.
+
+Feel free to modify these programs for your needs or ask for further clarifications!

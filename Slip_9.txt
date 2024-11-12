@@ -1,0 +1,278 @@
+### Q. 1: Design Simple HR Application Using Spring Framework
+
+A **Human Resource (HR) Application** can be designed using the **Spring Framework** to handle various functionalities such as managing employee records, adding and removing employees, and displaying employee information. We’ll use Spring Boot to make this process easier, along with the use of Spring Data JPA to manage the persistence layer.
+
+#### Steps for Implementation:
+
+1. **Set up a Spring Boot Project** using Spring Initializr (https://start.spring.io/).
+   - Add dependencies: Spring Web, Spring Data JPA, H2 Database (for in-memory database, you can replace with MySQL or PostgreSQL for production).
+
+2. **Create the Employee Entity**:
+   The `Employee` entity will hold the basic details of an employee like ID, name, and position.
+
+3. **Create a Repository for Database Access**:
+   Use Spring Data JPA to interact with the database for CRUD operations.
+
+4. **Create Service Layer**:
+   The service layer will handle the business logic related to employees.
+
+5. **Create Controller Layer**:
+   The controller will expose RESTful endpoints for the client to interact with.
+
+---
+
+#### Code Implementation:
+
+**1. Employee Entity (`Employee.java`)**
+
+```java
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+
+@Entity
+public class Employee {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private String position;
+
+    // Getters and setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+}
+```
+
+**2. Employee Repository (`EmployeeRepository.java`)**
+
+```java
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+    // Additional query methods can be added here
+}
+```
+
+**3. Employee Service (`EmployeeService.java`)**
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class EmployeeService {
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    // Create or update employee
+    public Employee saveEmployee(Employee employee) {
+        return employeeRepository.save(employee);
+    }
+
+    // Get all employees
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    // Get an employee by ID
+    public Optional<Employee> getEmployeeById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
+    // Delete employee
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+    }
+}
+```
+
+**4. Employee Controller (`EmployeeController.java`)**
+
+```java
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    // Create or update employee
+    @PostMapping
+    public Employee createOrUpdateEmployee(@RequestBody Employee employee) {
+        return employeeService.saveEmployee(employee);
+    }
+
+    // Get all employees
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    // Get employee by ID
+    @GetMapping("/{id}")
+    public Optional<Employee> getEmployeeById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id);
+    }
+
+    // Delete employee
+    @DeleteMapping("/{id}")
+    public void deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+    }
+}
+```
+
+**5. Application Main Class (`HrApplication.java`)**
+
+```java
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class HrApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(HrApplication.class, args);
+    }
+}
+```
+
+**6. `application.properties` for In-memory Database (H2)**
+
+```properties
+# H2 Database configuration
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+spring.h2.console.enabled=true
+spring.jpa.hibernate.ddl-auto=update
+```
+
+#### Explanation:
+1. **`Employee` Entity**: Defines the fields `id`, `name`, and `position` to store employee data.
+2. **`EmployeeRepository`**: Extends `JpaRepository` to provide CRUD operations.
+3. **`EmployeeService`**: Business logic for creating, reading, updating, and deleting employees.
+4. **`EmployeeController`**: Exposes REST API endpoints to handle HTTP requests (POST, GET, DELETE).
+5. **Main Class (`HrApplication`)**: Bootstraps the Spring Boot application.
+6. **H2 Database**: The application uses H2 as an in-memory database, which is great for testing. You can replace it with MySQL or PostgreSQL for production.
+
+#### Endpoints:
+- **POST /employees**: Add or update an employee.
+- **GET /employees**: Get all employees.
+- **GET /employees/{id}**: Get a specific employee by ID.
+- **DELETE /employees/{id}**: Delete an employee by ID.
+
+---
+
+### Q. 2: Python Programs for Raspberry Pi
+
+Here are the Python programs for each of your requirements.
+
+#### a) **Read your name and print a Hello message with name**
+
+```python
+# Read name from the user and print a Hello message
+name = input("Enter your name: ")
+print(f"Hello, {name}!")
+```
+
+#### b) **Read two numbers and print their sum, difference, product, and division**
+
+```python
+# Read two numbers from the user
+num1 = float(input("Enter first number: "))
+num2 = float(input("Enter second number: "))
+
+# Perform and display calculations
+sum_result = num1 + num2
+diff_result = num1 - num2
+prod_result = num1 * num2
+div_result = num1 / num2 if num2 != 0 else "undefined (division by zero)"
+
+print(f"Sum: {sum_result}")
+print(f"Difference: {diff_result}")
+print(f"Product: {prod_result}")
+print(f"Division: {div_result}")
+```
+
+#### c) **Word and character count of a given string**
+
+```python
+# Read input string from user
+input_string = input("Enter a string: ")
+
+# Count words and characters
+word_count = len(input_string.split())
+char_count = len(input_string.replace(" ", ""))  # Removing spaces for character count
+
+print(f"Word count: {word_count}")
+print(f"Character count (excluding spaces): {char_count}")
+```
+
+#### d) **Area of a given shape (rectangle, triangle, and circle) reading shape and appropriate values**
+
+```python
+# Read the shape type from the user
+shape = input("Enter the shape (rectangle/triangle/circle): ").lower()
+
+if shape == "rectangle":
+    length = float(input("Enter the length of the rectangle: "))
+    width = float(input("Enter the width of the rectangle: "))
+    area = length * width
+    print(f"The area of the rectangle is: {area}")
+elif shape == "triangle":
+    base = float(input("Enter the base of the triangle: "))
+    height = float(input("Enter the height of the triangle: "))
+    area = 0.5 * base * height
+    print(f"The area of the triangle is: {area}")
+elif shape == "circle":
+    radius = float(input("Enter the radius of the circle: "))
+    area = 3.14159 * radius * radius
+    print(f"The area of the circle is: {area}")
+else:
+    print("Invalid shape")
+```
+
+### Explanation:
+1. **Program (a)**: Reads the user’s name and prints a greeting.
+2. **Program (b)**: Takes two numeric inputs and calculates their sum, difference, product, and division.
+3. **Program (c)**: Takes a string input, counts the words by splitting the string, and counts the characters by removing spaces.
+4. **Program (d)**: Takes input for different shapes and calculates the area based on the shape type entered by the user.
+
+These programs should work well on Raspberry Pi as they are written in Python, which is the default programming language for Raspberry Pi.

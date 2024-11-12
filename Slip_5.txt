@@ -1,0 +1,120 @@
+To implement your requirements in a way that can be run in Proteus Simulation software, here's a breakdown of both questions:
+
+---
+
+### Q.1 Java Program to Implement Adapter Pattern for Enumeration Iterator
+
+The **Adapter Pattern** is used to enable classes with incompatible interfaces to work together. You can create an adapter for an `Enumeration` iterator to make it compatible with the more modern `Iterator` interface.
+
+Here's how you can implement it:
+
+```java
+import java.util.*;
+
+interface EnumerationAdapter<E> extends Iterator<E> {
+    boolean hasNext();
+    E next();
+}
+
+class EnumerationToIteratorAdapter<E> implements EnumerationAdapter<E> {
+    private Enumeration<E> enumeration;
+
+    public EnumerationToIteratorAdapter(Enumeration<E> enumeration) {
+        this.enumeration = enumeration;
+    }
+
+    public boolean hasNext() {
+        return enumeration.hasMoreElements();
+    }
+
+    public E next() {
+        return enumeration.nextElement();
+    }
+}
+
+public class AdapterPatternExample {
+    public static void main(String[] args) {
+        Vector<String> vector = new Vector<>();
+        vector.add("Apple");
+        vector.add("Banana");
+        vector.add("Cherry");
+
+        Enumeration<String> enumeration = vector.elements();
+        Iterator<String> iterator = new EnumerationToIteratorAdapter<>(enumeration);
+
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+    }
+}
+```
+
+### Explanation:
+- The program adapts an `Enumeration` to an `Iterator` using the Adapter Pattern.
+- `EnumerationToIteratorAdapter` implements the `Iterator` interface by wrapping an existing `Enumeration`.
+- The `main` method demonstrates the use of this adapter by converting an `Enumeration` to an `Iterator` and using it in a loop.
+
+### Q.2 Program to Connect with Available Wi-Fi Using Arduino (Proteus Simulation)
+
+Proteus Simulation doesn't natively support Wi-Fi modules like ESP8266 or ESP32. However, you can simulate the logic in Arduino and communicate via serial or other simulated interfaces in Proteus.
+
+Here’s the general setup and code to connect an **ESP8266 Wi-Fi module** to a Wi-Fi network.
+
+#### Steps:
+1. **Setup in Proteus:**
+   - Create a new Proteus project.
+   - Add an **Arduino** model to the workspace (e.g., **Arduino Uno**).
+   - Add the **ESP8266 Wi-Fi module** (or ESP32, depending on the simulation support).
+   - Use the **Serial Communication** tool in Proteus to simulate data sent over Wi-Fi (though actual Wi-Fi connection won't work in Proteus).
+
+2. **Wiring in Proteus:**
+   - Connect the **TX and RX pins** of the ESP8266 to the **Arduino**'s respective pins (i.e., TX to RX and RX to TX).
+   - Connect **VCC and GND** of the ESP8266 to appropriate power and ground.
+   - The ESP8266 operates at 3.3V, so be sure to adjust your connections accordingly.
+
+3. **Arduino Code:**
+
+```cpp
+#include <ESP8266WiFi.h>
+
+const char* ssid = "your_SSID";        // Replace with your Wi-Fi SSID
+const char* password = "your_PASSWORD"; // Replace with your Wi-Fi password
+
+void setup() {
+  Serial.begin(9600);
+  delay(1000);
+
+  // Connect to Wi-Fi
+  Serial.println("Connecting to Wi-Fi...");
+  WiFi.begin(ssid, password);
+
+  // Wait for connection
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.print(".");
+  }
+
+  // When connected
+  Serial.println("");
+  Serial.println("Connected to Wi-Fi!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  // You can add logic here to interact with the Wi-Fi network, like sending data
+}
+```
+
+### Explanation:
+- The **ESP8266WiFi** library is used to control the Wi-Fi connection.
+- In the `setup()` function, the Arduino will connect to the specified Wi-Fi network using `WiFi.begin()`.
+- Once connected, it will display the device’s IP address on the serial monitor.
+
+### Key Notes for Proteus Simulation:
+- **Proteus** does not support the **Wi-Fi connection** itself. However, you can simulate serial communication and display the status and IP address on the **Serial Monitor**.
+- For an actual Wi-Fi connection, you’ll need to upload this code to a real **Arduino** board with an **ESP8266** or **ESP32** and monitor the connection in a real-world setup.
+
+---
+
+These answers should be helpful for both implementing the Adapter Pattern in Java and setting up a simulated Wi-Fi connection in Proteus with Arduino. Let me know if you need more clarification on any step!

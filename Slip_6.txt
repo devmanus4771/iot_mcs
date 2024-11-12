@@ -1,0 +1,164 @@
+Here’s a detailed answer to both your questions.
+
+---
+
+### Q.1 Java Program to Implement Command Pattern for Remote Control
+
+The **Command Pattern** is a behavioral design pattern in which a request is encapsulated as an object, thereby allowing for parameterization of clients with queues, requests, and operations.
+
+In the context of a remote control, we will create a simple example where each button on the remote will correspond to a specific action (like turning a device on or off).
+
+#### Components:
+- **Command Interface**: Defines a method for executing a command.
+- **Concrete Command Classes**: Implement the command interface and define the actual operation to be executed.
+- **Invoker (Remote Control)**: Stores and invokes the commands.
+- **Receiver (Device)**: The class that will perform the actual operation when the command is invoked.
+
+#### Java Code:
+
+```java
+// Command Interface
+interface Command {
+    void execute();
+}
+
+// Receiver class (the device)
+class Light {
+    public void on() {
+        System.out.println("The light is ON");
+    }
+    
+    public void off() {
+        System.out.println("The light is OFF");
+    }
+}
+
+// Concrete Command to turn the light ON
+class LightOnCommand implements Command {
+    private Light light;
+    
+    public LightOnCommand(Light light) {
+        this.light = light;
+    }
+    
+    @Override
+    public void execute() {
+        light.on();
+    }
+}
+
+// Concrete Command to turn the light OFF
+class LightOffCommand implements Command {
+    private Light light;
+    
+    public LightOffCommand(Light light) {
+        this.light = light;
+    }
+    
+    @Override
+    public void execute() {
+        light.off();
+    }
+}
+
+// Remote Control (Invoker)
+class RemoteControl {
+    private Command slot;
+    
+    public void setCommand(Command command) {
+        slot = command;
+    }
+    
+    public void pressButton() {
+        slot.execute();
+    }
+}
+
+public class CommandPatternExample {
+    public static void main(String[] args) {
+        // Create the receiver (Light)
+        Light light = new Light();
+        
+        // Create the commands
+        Command lightOn = new LightOnCommand(light);
+        Command lightOff = new LightOffCommand(light);
+        
+        // Create the remote control
+        RemoteControl remote = new RemoteControl();
+        
+        // Turn the light on
+        remote.setCommand(lightOn);
+        remote.pressButton();
+        
+        // Turn the light off
+        remote.setCommand(lightOff);
+        remote.pressButton();
+    }
+}
+```
+
+### Explanation:
+- **Receiver**: The `Light` class represents the device that performs the actual operations.
+- **Command Interface**: The `Command` interface declares an `execute()` method that is implemented by concrete command classes.
+- **Concrete Commands**: `LightOnCommand` and `LightOffCommand` are concrete implementations of the command interface that invoke the respective operations (`on()` or `off()`) on the `Light` object.
+- **Invoker**: The `RemoteControl` class stores the command and invokes it when the button is pressed.
+  
+When you run this program, it will simulate pressing buttons on a remote control to turn a light on and off.
+
+---
+
+### Q.2 Program to Get Temperature Notification Using Arduino
+
+For temperature monitoring, you will typically use a temperature sensor like **LM35** or **DHT11/22**. In this example, I will show you how to get the temperature from an LM35 sensor and send a notification if the temperature exceeds a certain threshold.
+
+Since **Proteus** doesn’t support notifications directly, you can simulate this behavior by printing temperature data to the **Serial Monitor** and triggering an alert when the temperature exceeds a certain value.
+
+#### Hardware Setup in Proteus:
+1. **LM35 Temperature Sensor**: Connect the **VCC** pin to **5V**, **GND** pin to **GND**, and the **Output** pin to **Analog Pin A0** on the Arduino.
+2. **Arduino Uno**: Connect it to the LM35 sensor as described.
+3. **Proteus Simulation**: Use the **Serial Monitor** to display the notifications.
+
+#### Arduino Code:
+
+```cpp
+const int sensorPin = A0;  // Pin where the LM35 is connected
+float temperature;         // Variable to store temperature value
+const float threshold = 30.0; // Threshold temperature for notification (in Celsius)
+
+void setup() {
+  Serial.begin(9600); // Start serial communication
+}
+
+void loop() {
+  // Read the analog input (temperature sensor)
+  int sensorValue = analogRead(sensorPin);
+
+  // Convert the sensor value to temperature (LM35 gives 10mV per degree Celsius)
+  temperature = sensorValue * (5.0 / 1023.0) * 100;
+
+  // Print the temperature to the Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  // If the temperature exceeds the threshold, send a notification (via Serial)
+  if (temperature > threshold) {
+    Serial.println("Alert: Temperature exceeds threshold!");
+  }
+
+  delay(1000); // Delay for a second before reading again
+}
+```
+
+### Explanation:
+- **LM35**: The analog sensor outputs 10 mV per degree Celsius. The Arduino converts the analog signal to a temperature value using the formula `(sensorValue * (5.0 / 1023.0) * 100)`.
+- **Threshold**: The program will check if the temperature exceeds a threshold (e.g., 30°C), and if it does, it sends an alert to the **Serial Monitor**.
+- **Notification**: In this case, the notification is printed to the serial monitor. In a real-world scenario, you could connect an alert system (e.g., sending an SMS, email, or app notification) using additional hardware (like a GSM module).
+
+### Key Notes for Proteus Simulation:
+- For **Proteus**, the serial monitor will display temperature readings, and an alert will be printed when the threshold is exceeded.
+- You can simulate the temperature changes by adjusting the input to the LM35 or simulate different temperatures with an external input.
+
+---
+
+These two programs should help you with implementing the **Command Pattern for Remote Control** and creating a **temperature notification system** using Arduino. Let me know if you need further clarification or help with any step!

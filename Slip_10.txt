@@ -1,0 +1,203 @@
+### Q. 1: Java Program to Implement Strategy Pattern for Duck Behavior
+
+The **Strategy Pattern** is a behavioral design pattern that allows an object to change its behavior at runtime. In this case, we'll implement the behavior of a **Duck** that can have different flying and quacking behaviors. We will define interfaces for these behaviors and allow different implementations to be injected into the Duck class.
+
+#### Steps for Implementation:
+1. **Define the `FlyBehavior` and `QuackBehavior` interfaces**.
+2. **Create concrete classes for different behaviors**.
+3. **Create the `Duck` class** which holds a reference to the behaviors and delegates the action to them.
+4. **Context Class (`Duck`)**: This class will allow dynamic changes in behavior.
+
+---
+
+#### Java Code Implementation:
+
+```java
+// FlyBehavior Interface
+interface FlyBehavior {
+    void fly();
+}
+
+// Concrete FlyBehavior: Fly with wings
+class FlyWithWings implements FlyBehavior {
+    @Override
+    public void fly() {
+        System.out.println("I'm flying with wings!");
+    }
+}
+
+// Concrete FlyBehavior: No flying
+class FlyNoWay implements FlyBehavior {
+    @Override
+    public void fly() {
+        System.out.println("I can't fly!");
+    }
+}
+
+// QuackBehavior Interface
+interface QuackBehavior {
+    void quack();
+}
+
+// Concrete QuackBehavior: Quack loudly
+class Quack implements QuackBehavior {
+    @Override
+    public void quack() {
+        System.out.println("Quack! Quack!");
+    }
+}
+
+// Concrete QuackBehavior: Mute, no quacking
+class MuteQuack implements QuackBehavior {
+    @Override
+    public void quack() {
+        System.out.println("...");
+    }
+}
+
+// Duck class (Context)
+class Duck {
+    private FlyBehavior flyBehavior;
+    private QuackBehavior quackBehavior;
+
+    public Duck(FlyBehavior flyBehavior, QuackBehavior quackBehavior) {
+        this.flyBehavior = flyBehavior;
+        this.quackBehavior = quackBehavior;
+    }
+
+    public void performFly() {
+        flyBehavior.fly();
+    }
+
+    public void performQuack() {
+        quackBehavior.quack();
+    }
+
+    // Allows the Duck to change behaviors dynamically
+    public void setFlyBehavior(FlyBehavior flyBehavior) {
+        this.flyBehavior = flyBehavior;
+    }
+
+    public void setQuackBehavior(QuackBehavior quackBehavior) {
+        this.quackBehavior = quackBehavior;
+    }
+
+    // Other common behaviors
+    public void swim() {
+        System.out.println("All ducks can swim!");
+    }
+}
+
+// Main class to test the Strategy Pattern
+public class DuckTest {
+    public static void main(String[] args) {
+        // Create a Duck with fly and quack behaviors
+        Duck mallardDuck = new Duck(new FlyWithWings(), new Quack());
+
+        System.out.println("Mallard Duck behavior:");
+        mallardDuck.performFly();
+        mallardDuck.performQuack();
+        mallardDuck.swim();
+
+        // Change behavior dynamically
+        mallardDuck.setFlyBehavior(new FlyNoWay()); // Change fly behavior
+        mallardDuck.setQuackBehavior(new MuteQuack()); // Change quack behavior
+
+        System.out.println("\nAfter changing behaviors:");
+        mallardDuck.performFly();
+        mallardDuck.performQuack();
+        mallardDuck.swim();
+    }
+}
+```
+
+#### Explanation:
+1. **`FlyBehavior` Interface**: Declares the `fly()` method, which will be implemented by various flying behaviors.
+2. **Concrete `FlyBehavior` Classes**: `FlyWithWings` and `FlyNoWay` provide specific implementations for flying.
+3. **`QuackBehavior` Interface**: Declares the `quack()` method, which will be implemented by various quacking behaviors.
+4. **Concrete `QuackBehavior` Classes**: `Quack` and `MuteQuack` provide specific implementations for quacking.
+5. **`Duck` Class**: Holds a reference to the `FlyBehavior` and `QuackBehavior` interfaces, and delegates behavior execution to the currently set strategies. It also allows changing the behavior dynamically.
+6. **Main Class**: Tests the Strategy Pattern by creating a `Duck` and demonstrating dynamic behavior changes.
+
+#### Output Example:
+```
+Mallard Duck behavior:
+I'm flying with wings!
+Quack! Quack!
+All ducks can swim!
+
+After changing behaviors:
+I can't fly!
+...
+All ducks can swim!
+```
+
+---
+
+### Q. 2: Python Programs for Raspberry Pi
+
+Here are the Python programs for the given tasks:
+
+#### a) **Print a name 'n' times, where name and n are read from standard input, using `for` and `while` loops.**
+
+```python
+# Using for loop
+name = input("Enter your name: ")
+n = int(input("How many times to print the name? "))
+
+print("\nUsing for loop:")
+for _ in range(n):
+    print(name)
+
+# Using while loop
+print("\nUsing while loop:")
+count = 0
+while count < n:
+    print(name)
+    count += 1
+```
+
+#### b) **Handle Divided by Zero Exception**
+
+```python
+try:
+    num1 = float(input("Enter first number: "))
+    num2 = float(input("Enter second number: "))
+    result = num1 / num2
+    print(f"The result of division is: {result}")
+except ZeroDivisionError:
+    print("Error: Division by zero is not allowed.")
+```
+
+#### c) **Print current time for 10 times with an interval of 10 seconds**
+
+```python
+import time
+from datetime import datetime
+
+for _ in range(10):
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"Current time: {current_time}")
+    time.sleep(10)
+```
+
+#### d) **Read a file line by line and print the word count of each line**
+
+```python
+# Assuming 'file.txt' is the file to be read
+try:
+    with open('file.txt', 'r') as file:
+        for line_number, line in enumerate(file, start=1):
+            word_count = len(line.split())
+            print(f"Line {line_number}: {word_count} words")
+except FileNotFoundError:
+    print("The file 'file.txt' was not found.")
+```
+
+### Explanation:
+1. **Program (a)**: Reads a name and a number, and prints the name the specified number of times using both `for` and `while` loops.
+2. **Program (b)**: Catches the `ZeroDivisionError` exception to handle division by zero.
+3. **Program (c)**: Prints the current time 10 times with a 10-second interval using the `time.sleep()` function.
+4. **Program (d)**: Reads a file line by line, splits each line into words, and counts the number of words per line.
+
+These programs will work on your Raspberry Pi as long as Python is installed, which is the default setup for Raspberry Pi.

@@ -1,0 +1,122 @@
+Alright, I will provide detailed comments and steps for running the practicals in **Proteus Simulation Software** for both **Java** and **Arduino** programs.
+
+### **Slip 1:**
+
+### **Q.1 Java Program - I/O Decorator for converting uppercase letters to lowercase**
+
+#### **Code:**
+```java
+import java.io.*;
+
+// Main class for converting uppercase letters to lowercase
+public class LowerCaseDecorator {
+    public static void main(String[] args) throws IOException {
+        // Reading input from the user
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("Enter text (uppercase letters will be converted to lowercase):");
+        String input = reader.readLine();
+
+        // StringReader used as a decorator to read the input string
+        StringReader stringReader = new StringReader(input);
+        int character;
+
+        // Converting each character to lowercase
+        System.out.print("Converted Text: ");
+        while ((character = stringReader.read()) != -1) {
+            System.out.print(Character.toLowerCase((char) character));
+        }
+    }
+}
+```
+
+#### **Steps to Run:**
+1. **Setup the Java Environment**:
+   - Make sure Java JDK is installed on your system.
+   - Save the above code in a file named `LowerCaseDecorator.java`.
+   
+2. **Compile and Run the Program**:
+   - Open the terminal or command prompt.
+   - Navigate to the directory where the file is saved.
+   - Compile using: `javac LowerCaseDecorator.java`.
+   - Run the program using: `java LowerCaseDecorator`.
+   
+3. **Input/Output**:
+   - Input: Any text with uppercase letters (e.g., `HELLO WORLD`).
+   - Output: Converted text in lowercase (e.g., `hello world`).
+
+---
+
+### **Q.2 Arduino Program - Sense Available Networks using ESP8266**
+
+#### **Components Required**:
+1. **ESP8266 Module** (or any WiFi-enabled Arduino board like NodeMCU).
+2. **USB to Serial Adapter** (for uploading code).
+3. **Proteus Software** (for simulation).
+
+#### **Proteus Simulation Setup**:
+1. **Open Proteus** and create a new project.
+2. **Add Components**:
+   - Search and add `ESP8266` module.
+   - Add a `Virtual Terminal` for displaying the output.
+3. **Wiring**:
+   - Connect `TX` of ESP8266 to `RX` of Virtual Terminal.
+   - Connect `RX` of ESP8266 to `TX` of Virtual Terminal.
+   - Connect the `Ground` to the common ground of Virtual Terminal.
+
+#### **Code:**
+```cpp
+#include <ESP8266WiFi.h>
+
+// Initialize serial communication
+void setup() {
+    Serial.begin(115200);
+    Serial.println("Scanning for available networks...");
+
+    // Scan WiFi networks
+    int n = WiFi.scanNetworks();
+    
+    // If no networks found, print the message
+    if (n == 0) {
+        Serial.println("No networks found");
+    } else {
+        // Print the number of networks found
+        Serial.println("Networks found:");
+        for (int i = 0; i < n; ++i) {
+            // Display the SSID and signal strength of each network
+            Serial.print(i + 1);
+            Serial.print(": ");
+            Serial.print(WiFi.SSID(i)); // Get SSID of the network
+            Serial.print(" (");
+            Serial.print(WiFi.RSSI(i)); // Get signal strength in dBm
+            Serial.println(" dBm)");
+        }
+    }
+}
+
+void loop() {
+    // No operation in loop
+}
+```
+
+#### **Steps to Run in Proteus**:
+1. **Upload Code to ESP8266**:
+   - Open the Arduino IDE and select `NodeMCU` or `ESP8266` as the board.
+   - Connect the board and upload the code.
+   
+2. **Simulation**:
+   - Open the saved project in Proteus.
+   - Start the simulation by clicking on the "Play" button.
+   - The available networks will be displayed in the Virtual Terminal.
+   
+3. **Expected Output**:
+   - The terminal will display a list of available WiFi networks with their signal strength.
+   - Example:
+     ```
+     Scanning for available networks...
+     1: MyNetwork ( -40 dBm)
+     2: GuestWiFi ( -75 dBm)
+     ```
+
+---
+
+Let me know if you want to proceed with the next slip or need any more specific adjustments for the Proteus setup!

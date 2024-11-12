@@ -1,0 +1,201 @@
+### Q. 1: Java Program to Implement Abstract Factory Pattern for Shape Interface
+
+The **Abstract Factory Pattern** is a creational design pattern that provides an interface for creating families of related or dependent objects without specifying their concrete classes. In this case, we will create a `Shape` interface and different concrete shape classes (`Circle`, `Square`, etc.) for different shapes, and a factory interface for creating shapes.
+
+---
+
+#### Java Code Implementation:
+
+**1. Shape Interface**: This defines the common method that all shape classes must implement.
+
+```java
+interface Shape {
+    void draw();
+}
+```
+
+**2. Concrete Shape Classes**: These implement the `Shape` interface.
+
+```java
+// Circle class
+class Circle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Circle");
+    }
+}
+
+// Square class
+class Square implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Square");
+    }
+}
+
+// Rectangle class
+class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("Drawing a Rectangle");
+    }
+}
+```
+
+**3. Abstract Factory Interface**: This defines the methods to create different shapes.
+
+```java
+interface ShapeFactory {
+    Shape createShape();
+}
+```
+
+**4. Concrete Factories**: These implement the `ShapeFactory` interface and return specific shape objects.
+
+```java
+// Circle Factory
+class CircleFactory implements ShapeFactory {
+    @Override
+    public Shape createShape() {
+        return new Circle();
+    }
+}
+
+// Square Factory
+class SquareFactory implements ShapeFactory {
+    @Override
+    public Shape createShape() {
+        return new Square();
+    }
+}
+
+// Rectangle Factory
+class RectangleFactory implements ShapeFactory {
+    @Override
+    public Shape createShape() {
+        return new Rectangle();
+    }
+}
+```
+
+**5. Client Class to Test the Abstract Factory Pattern**
+
+```java
+public class AbstractFactoryPatternTest {
+    public static void main(String[] args) {
+        // Create concrete factories
+        ShapeFactory circleFactory = new CircleFactory();
+        ShapeFactory squareFactory = new SquareFactory();
+        ShapeFactory rectangleFactory = new RectangleFactory();
+
+        // Create shapes using the factories
+        Shape circle = circleFactory.createShape();
+        Shape square = squareFactory.createShape();
+        Shape rectangle = rectangleFactory.createShape();
+
+        // Draw shapes
+        circle.draw();
+        square.draw();
+        rectangle.draw();
+    }
+}
+```
+
+#### Explanation:
+1. **Shape Interface**: The `Shape` interface defines a method `draw()` that all shape classes must implement.
+2. **Concrete Shape Classes**: These classes (`Circle`, `Square`, `Rectangle`) implement the `Shape` interface and provide their own `draw()` implementations.
+3. **ShapeFactory Interface**: This is an abstract factory interface that declares a method `createShape()`, which concrete factories will implement to create shapes.
+4. **Concrete Factories**: These factories (`CircleFactory`, `SquareFactory`, `RectangleFactory`) implement the `ShapeFactory` interface and create the respective shape objects.
+5. **Client Code**: In the `AbstractFactoryPatternTest` class, we create instances of concrete factories and use them to create and draw shapes.
+
+#### Output:
+```
+Drawing a Circle
+Drawing a Square
+Drawing a Rectangle
+```
+
+---
+
+### Q. 2: Arduino Program to Get Temperature Notification
+
+We will use a **DHT11** or **DHT22** sensor to read temperature and humidity values. The program will display the temperature and send a notification when the temperature goes above a certain threshold (e.g., 30°C).
+
+#### Hardware Required:
+1. **DHT11 or DHT22 sensor** (Temperature and Humidity sensor)
+2. **Arduino Board** (e.g., Arduino Uno)
+3. **Resistor** (4.7kΩ, used for the data line of the sensor)
+4. **Jumper Wires**
+
+#### Wiring:
+- **DHT Sensor:**
+  - VCC → 5V
+  - GND → GND
+  - DATA → Digital Pin 2 (or any other digital pin)
+  - 4.7kΩ resistor between VCC and DATA pin.
+
+#### Arduino Code:
+
+```cpp
+#include <DHT.h>
+
+#define DHTPIN 2           // Pin connected to the DHT sensor
+#define DHTTYPE DHT11      // Change to DHT22 if using DHT22 sensor
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);   // Start serial communication
+  dht.begin();          // Initialize the DHT sensor
+  Serial.println("Temperature Notification System");
+}
+
+void loop() {
+  // Read temperature and humidity from the sensor
+  float temperature = dht.readTemperature();  // Read temperature in Celsius
+  float humidity = dht.readHumidity();        // Read humidity in %
+
+  // Check if the readings failed
+  if (isnan(temperature) || isnan(humidity)) {
+    Serial.println("Failed to read from DHT sensor!");
+    return;
+  }
+
+  // Print temperature and humidity to Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print(" °C\t");
+  Serial.print("Humidity: ");
+  Serial.print(humidity);
+  Serial.println(" %");
+
+  // Check if the temperature is above the threshold (30°C)
+  if (temperature > 30.0) {
+    Serial.println("Temperature is above threshold! Sending notification...");
+    // Add any action to send notification, e.g., turn on an LED, send an email, etc.
+  }
+
+  delay(2000);  // Wait for 2 seconds before reading again
+}
+```
+
+#### Explanation:
+1. **DHT Sensor**: The `DHT` library is used to interface with the DHT11 or DHT22 temperature and humidity sensor.
+2. **Reading Temperature**: The `dht.readTemperature()` function reads the temperature from the sensor. If the sensor fails to provide a valid reading, the program prints an error message.
+3. **Threshold Check**: If the temperature exceeds 30°C, the program prints a notification message. You can extend this functionality to trigger other actions, like lighting up an LED or sending a notification.
+4. **Serial Monitor**: The temperature and humidity values are printed to the Serial Monitor every 2 seconds.
+
+#### Output Example:
+```
+Temperature Notification System
+Temperature: 25.00 °C    Humidity: 60.00 %
+Temperature: 30.50 °C    Humidity: 55.00 %
+Temperature is above threshold! Sending notification...
+Temperature: 29.00 °C    Humidity: 58.00 %
+```
+
+You can extend the code to perform actions like sending an email or turning on an LED when the temperature exceeds a certain threshold. Let me know if you need more details on that!
+
+--- 
+
+Let me know if you need further assistance or clarification!

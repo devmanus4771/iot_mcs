@@ -1,0 +1,337 @@
+### Q. 1: Java Program to Implement State Pattern for Gumball Machine
+
+The **State Pattern** allows an object to change its behavior when its internal state changes. In the case of a **Gumball Machine**, the machine can be in different states (e.g., **No Quarter**, **Has Quarter**, **Sold**, and **Sold Out**), and each state has different behaviors.
+
+Let’s break it down:
+- We will define a **State Interface** for all the states.
+- We will create **Concrete States** implementing the State Interface.
+- The **Gumball Machine** will manage the current state and delegate actions to the appropriate state object.
+
+#### Java Code:
+
+```java
+// State Interface
+interface State {
+    void insertQuarter();
+    void ejectQuarter();
+    void turnCrank();
+    void dispense();
+}
+
+// Concrete State: No Quarter State
+class NoQuarterState implements State {
+    private GumballMachine gumballMachine;
+    
+    public NoQuarterState(GumballMachine gumballMachine) {
+        this.gumballMachine = gumballMachine;
+    }
+
+    @Override
+    public void insertQuarter() {
+        System.out.println("You inserted a quarter.");
+        gumballMachine.setState(gumballMachine.getHasQuarterState());
+    }
+
+    @Override
+    public void ejectQuarter() {
+        System.out.println("You haven't inserted a quarter.");
+    }
+
+    @Override
+    public void turnCrank() {
+        System.out.println("You need to insert a quarter first.");
+    }
+
+    @Override
+    public void dispense() {
+        System.out.println("You need to insert a quarter first.");
+    }
+}
+
+// Concrete State: Has Quarter State
+class HasQuarterState implements State {
+    private GumballMachine gumballMachine;
+
+    public HasQuarterState(GumballMachine gumballMachine) {
+        this.gumballMachine = gumballMachine;
+    }
+
+    @Override
+    public void insertQuarter() {
+        System.out.println("You can't insert another quarter.");
+    }
+
+    @Override
+    public void ejectQuarter() {
+        System.out.println("Quarter returned.");
+        gumballMachine.setState(gumballMachine.getNoQuarterState());
+    }
+
+    @Override
+    public void turnCrank() {
+        System.out.println("You turned the crank...");
+        gumballMachine.setState(gumballMachine.getSoldState());
+    }
+
+    @Override
+    public void dispense() {
+        System.out.println("No gumball dispensed.");
+    }
+}
+
+// Concrete State: Sold State
+class SoldState implements State {
+    private GumballMachine gumballMachine;
+
+    public SoldState(GumballMachine gumballMachine) {
+        this.gumballMachine = gumballMachine;
+    }
+
+    @Override
+    public void insertQuarter() {
+        System.out.println("Please wait, we're already giving you a gumball.");
+    }
+
+    @Override
+    public void ejectQuarter() {
+        System.out.println("Sorry, you already turned the crank.");
+    }
+
+    @Override
+    public void turnCrank() {
+        System.out.println("You already turned the crank.");
+    }
+
+    @Override
+    public void dispense() {
+        System.out.println("A gumball is coming out!");
+        gumballMachine.releaseBall();
+        if (gumballMachine.getCount() > 0) {
+            gumballMachine.setState(gumballMachine.getNoQuarterState());
+        } else {
+            System.out.println("Oops, out of gumballs!");
+            gumballMachine.setState(gumballMachine.getSoldOutState());
+        }
+    }
+}
+
+// Concrete State: Sold Out State
+class SoldOutState implements State {
+    private GumballMachine gumballMachine;
+
+    public SoldOutState(GumballMachine gumballMachine) {
+        this.gumballMachine = gumballMachine;
+    }
+
+    @Override
+    public void insertQuarter() {
+        System.out.println("Sorry, we're sold out.");
+    }
+
+    @Override
+    public void ejectQuarter() {
+        System.out.println("You haven't inserted a quarter.");
+    }
+
+    @Override
+    public void turnCrank() {
+        System.out.println("You can't turn the crank, we're out of gumballs.");
+    }
+
+    @Override
+    public void dispense() {
+        System.out.println("No gumball dispensed.");
+    }
+}
+
+// Gumball Machine (Context)
+class GumballMachine {
+    private State noQuarterState;
+    private State hasQuarterState;
+    private State soldState;
+    private State soldOutState;
+    private State state;
+    private int count;
+
+    public GumballMachine(int numberGumballs) {
+        noQuarterState = new NoQuarterState(this);
+        hasQuarterState = new HasQuarterState(this);
+        soldState = new SoldState(this);
+        soldOutState = new SoldOutState(this);
+        count = numberGumballs;
+        if (count > 0) {
+            state = noQuarterState;
+        } else {
+            state = soldOutState;
+        }
+    }
+
+    public void insertQuarter() {
+        state.insertQuarter();
+    }
+
+    public void ejectQuarter() {
+        state.ejectQuarter();
+    }
+
+    public void turnCrank() {
+        state.turnCrank();
+        state.dispense();
+    }
+
+    public void releaseBall() {
+        System.out.println("A gumball comes rolling out the slot...");
+        if (count > 0) {
+            count--;
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    public State getNoQuarterState() {
+        return noQuarterState;
+    }
+
+    public State getHasQuarterState() {
+        return hasQuarterState;
+    }
+
+    public State getSoldState() {
+        return soldState;
+    }
+
+    public State getSoldOutState() {
+        return soldOutState;
+    }
+}
+
+// Main to test Gumball Machine State Pattern
+public class GumballMachineTest {
+    public static void main(String[] args) {
+        GumballMachine gumballMachine = new GumballMachine(2);
+
+        System.out.println("Gumball Machine Test\n");
+
+        // Test various states
+        gumballMachine.insertQuarter();
+        gumballMachine.turnCrank();
+        System.out.println();
+
+        gumballMachine.insertQuarter();
+        gumballMachine.turnCrank();
+        System.out.println();
+
+        gumballMachine.insertQuarter();
+        gumballMachine.turnCrank();
+        System.out.println();
+    }
+}
+```
+
+### Explanation:
+- **State Interface**: Defines the behavior of each state.
+- **Concrete States**: Each state implements the `State` interface and provides concrete behavior for inserting a quarter, ejecting a quarter, turning the crank, and dispensing gumballs.
+- **Context (GumballMachine)**: This class maintains the current state and delegates actions to the current state. It also handles state transitions.
+
+#### Output Example:
+```
+Gumball Machine Test
+
+You inserted a quarter.
+You turned the crank...
+A gumball is coming out!
+A gumball comes rolling out the slot...
+
+You inserted a quarter.
+You turned the crank...
+A gumball is coming out!
+A gumball comes rolling out the slot...
+
+Sorry, we're sold out.
+```
+
+---
+
+### Q. 2: Start Raspberry Pi and Execute Various Linux Commands
+
+To execute various Linux commands in the terminal on a **Raspberry Pi**, you would typically do this through the **command-line interface (CLI)** or **SSH** if accessing remotely. Here are the commands you asked for, along with their descriptions:
+
+#### 1. **`ls`** - List directory contents:
+```bash
+ls
+```
+Displays a list of files and directories in the current directory.
+
+#### 2. **`cd`** - Change directory:
+```bash
+cd /home/pi/Documents
+```
+Changes the current directory to the specified path.
+
+#### 3. **`touch`** - Create a new empty file:
+```bash
+touch newfile.txt
+```
+Creates an empty file named `newfile.txt`.
+
+#### 4. **`mv`** - Move or rename a file:
+```bash
+mv oldfile.txt newfile.txt
+```
+Renames `oldfile.txt` to `newfile.txt`.
+
+#### 5. **`rm`** - Remove a file:
+```bash
+rm file.txt
+```
+Deletes the specified file.
+
+#### 6. **`man`** - Display manual for a command:
+```bash
+man ls
+```
+Shows the manual page for the `ls` command.
+
+#### 7. **`mkdir`** - Create a new directory:
+```bash
+mkdir newdir
+```
+Creates a new directory named `newdir`.
+
+#### 8. **`rmdir`** - Remove an empty directory:
+```bash
+rmdir newdir
+```
+Deletes the empty directory `newdir`.
+
+#### 9. **`tar`** - Archive files:
+```bash
+tar -cvf archive.tar /home/pi/Documents/*
+```
+Creates a compressed archive of the specified files or directories.
+
+#### 10. **`gzip`** - Compress a file:
+```bash
+gzip file.txt
+```
+Compresses `file.txt` and creates `file.txt.gz`.
+
+#### 11. **`cat`** - Concatenate and display file content:
+```bash
+cat file.txt
+```
+Displays the content of `file.txt`.
+
+#### 12. **`more`** - View content of file (page-by-page):
+```bash
+more file.txt
+```
+Displays the content of `file.txt` one screen at a time.
+
+#### 13. **`less`** - Similar to `more`, but with

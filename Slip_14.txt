@@ -1,0 +1,269 @@
+### Q. 1: Java Program to Implement Command Design Pattern for Various Commands (LightOnCommand, LightOffCommand, GarageDoorUpCommand, StereoOnWithCDCommand)
+
+The **Command Pattern** is a behavioral design pattern that turns a request into a stand-alone object. The object contains all the necessary information about the request, which makes it possible to execute, undo, and store a series of actions. 
+
+We will implement a **Command Interface** with an `execute()` method and provide concrete implementations for different commands like **LightOnCommand**, **LightOffCommand**, **GarageDoorUpCommand**, and **StereoOnWithCDCommand**.
+
+---
+
+#### Java Code Implementation:
+
+**1. `Command` Interface**
+
+```java
+interface Command {
+    void execute();
+}
+```
+
+**2. Receiver Classes** (the classes that actually perform the operations)
+
+```java
+// Light class as a Receiver
+class Light {
+    public void on() {
+        System.out.println("The light is ON");
+    }
+
+    public void off() {
+        System.out.println("The light is OFF");
+    }
+}
+
+// GarageDoor class as a Receiver
+class GarageDoor {
+    public void up() {
+        System.out.println("The garage door is UP");
+    }
+
+    public void down() {
+        System.out.println("The garage door is DOWN");
+    }
+}
+
+// Stereo class as a Receiver
+class Stereo {
+    public void onWithCD() {
+        System.out.println("Stereo is ON with CD playing");
+    }
+
+    public void off() {
+        System.out.println("Stereo is OFF");
+    }
+}
+```
+
+**3. Concrete Command Classes** (each command implements the `execute()` method)
+
+```java
+// Command to turn the light on
+class LightOnCommand implements Command {
+    private Light light;
+
+    public LightOnCommand(Light light) {
+        this.light = light;
+    }
+
+    @Override
+    public void execute() {
+        light.on();
+    }
+}
+
+// Command to turn the light off
+class LightOffCommand implements Command {
+    private Light light;
+
+    public LightOffCommand(Light light) {
+        this.light = light;
+    }
+
+    @Override
+    public void execute() {
+        light.off();
+    }
+}
+
+// Command to open the garage door
+class GarageDoorUpCommand implements Command {
+    private GarageDoor garageDoor;
+
+    public GarageDoorUpCommand(GarageDoor garageDoor) {
+        this.garageDoor = garageDoor;
+    }
+
+    @Override
+    public void execute() {
+        garageDoor.up();
+    }
+}
+
+// Command to turn on the stereo with a CD
+class StereoOnWithCDCommand implements Command {
+    private Stereo stereo;
+
+    public StereoOnWithCDCommand(Stereo stereo) {
+        this.stereo = stereo;
+    }
+
+    @Override
+    public void execute() {
+        stereo.onWithCD();
+    }
+}
+```
+
+**4. The `RemoteControl` Class (Invoker)**
+
+```java
+class RemoteControl {
+    private Command[] commands;
+
+    public RemoteControl() {
+        commands = new Command[4];
+    }
+
+    // Assign commands to slots
+    public void setCommand(int slot, Command command) {
+        commands[slot] = command;
+    }
+
+    // Execute the command in the slot
+    public void pressButton(int slot) {
+        commands[slot].execute();
+    }
+}
+```
+
+**5. Main Class to Test the Command Pattern**
+
+```java
+public class CommandPatternTest {
+    public static void main(String[] args) {
+        // Create receivers (objects that perform the actions)
+        Light livingRoomLight = new Light();
+        GarageDoor garageDoor = new GarageDoor();
+        Stereo stereo = new Stereo();
+
+        // Create command objects
+        Command lightOn = new LightOnCommand(livingRoomLight);
+        Command lightOff = new LightOffCommand(livingRoomLight);
+        Command garageDoorUp = new GarageDoorUpCommand(garageDoor);
+        Command stereoOnWithCD = new StereoOnWithCDCommand(stereo);
+
+        // Create the remote control (Invoker)
+        RemoteControl remote = new RemoteControl();
+
+        // Set commands for each button on the remote
+        remote.setCommand(0, lightOn);
+        remote.setCommand(1, lightOff);
+        remote.setCommand(2, garageDoorUp);
+        remote.setCommand(3, stereoOnWithCD);
+
+        // Press buttons to execute commands
+        System.out.println("Pressing button 0 (Light On):");
+        remote.pressButton(0);
+
+        System.out.println("Pressing button 1 (Light Off):");
+        remote.pressButton(1);
+
+        System.out.println("Pressing button 2 (Garage Door Up):");
+        remote.pressButton(2);
+
+        System.out.println("Pressing button 3 (Stereo On with CD):");
+        remote.pressButton(3);
+    }
+}
+```
+
+#### Explanation:
+1. **Command Interface**: Defines the `execute()` method that concrete commands will implement.
+2. **Receiver Classes** (`Light`, `GarageDoor`, `Stereo`): These are the objects that perform the actual operations when a command is executed.
+3. **Concrete Command Classes**: Each of these classes implements the `Command` interface and calls the appropriate method on the receiver to perform the desired operation.
+4. **RemoteControl (Invoker)**: The remote control object invokes the commands by calling the `execute()` method on the command objects assigned to it. The `RemoteControl` holds an array of `Command` objects and executes the command based on the button pressed.
+
+#### Output Example:
+```
+Pressing button 0 (Light On):
+The light is ON
+Pressing button 1 (Light Off):
+The light is OFF
+Pressing button 2 (Garage Door Up):
+The garage door is UP
+Pressing button 3 (Stereo On with CD):
+Stereo is ON with CD playing
+```
+
+---
+
+### Q. 2: Arduino Program to Detect Vibration Using a Sensor and Blink an LED
+
+In this task, we will use a **Vibration Sensor** (e.g., SW-420) to detect vibrations and make an **LED** blink when a vibration is detected.
+
+#### Hardware Required:
+1. **Vibration Sensor** (SW-420 or similar)
+2. **LED**
+3. **Resistor** (220 ohms for the LED)
+4. **Jumper Wires**
+5. **Arduino Board** (e.g., Arduino Uno)
+
+#### Wiring:
+- **Vibration Sensor:**
+  - VCC → 5V
+  - GND → GND
+  - OUT → Pin 2 (or any other digital pin)
+  
+- **LED:**
+  - Anode (long leg) → Pin 13 (or any other digital pin)
+  - Cathode (short leg) → GND (with a 220-ohm resistor in series)
+
+#### Arduino Code:
+
+```cpp
+const int sensorPin = 2; // Vibration sensor connected to pin 2
+const int ledPin = 13;   // LED connected to pin 13
+
+void setup() {
+  // Initialize the sensor pin as input
+  pinMode(sensorPin, INPUT);
+  
+  // Initialize the LED pin as output
+  pinMode(ledPin, OUTPUT);
+  
+  // Start serial communication for debugging
+  Serial.begin(9600);
+}
+
+void loop() {
+  int sensorValue = digitalRead(sensorPin); // Read the vibration sensor
+
+  // Print sensor value to Serial Monitor for debugging
+  Serial.println(sensorValue);
+
+  if (sensorValue == HIGH) {
+    // If vibration is detected, blink the LED
+    digitalWrite(ledPin, HIGH);
+    delay(100);  // LED ON for 100 ms
+    digitalWrite(ledPin, LOW);
+    delay(100);  // LED OFF for 100 ms
+  } else {
+    // If no vibration, keep the LED off
+    digitalWrite(ledPin, LOW);
+  }
+  
+  delay(50);  // Small delay for stability
+}
+```
+
+#### Explanation:
+1. **Vibration Sensor**: The sensor detects vibrations and outputs a HIGH signal when a vibration is detected and LOW when no vibration is detected.
+2. **LED Blink Logic**: When the vibration sensor detects a vibration (sensor value HIGH), the LED blinks for 100 ms (ON) and 100 ms (OFF).
+3. **Serial Monitor**: The program prints the sensor value to the Serial Monitor for debugging.
+
+#### Output:
+- When the sensor detects a vibration, the LED will blink, and the Serial Monitor will show the sensor value (HIGH when vibration is detected, LOW when no vibration is detected).
+- If no vibration is detected, the LED remains OFF.
+
+---
+
+Let me know if you need further clarification or assistance!

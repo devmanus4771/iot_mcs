@@ -1,0 +1,235 @@
+Here are detailed solutions for your two questions.
+
+---
+
+### Q.1 Java Program to Implement Undo Command for Ceiling Fan
+
+The **Undo Command** is an application of the **Command Pattern** where a command can be undone or reversed after execution. In this case, we’ll simulate the operation of a **Ceiling Fan** with different speeds and implement the **Undo** functionality.
+
+We will create the following components:
+1. **Command Interface**: A generic interface to execute and undo commands.
+2. **Concrete Commands**: Specific commands for turning the fan on and off, and setting speeds.
+3. **Invoker (Remote Control)**: To execute and undo commands.
+4. **Receiver (Ceiling Fan)**: The device on which commands operate.
+
+#### Java Code:
+
+```java
+// Command Interface
+interface Command {
+    void execute();
+    void undo();
+}
+
+// Receiver (Ceiling Fan)
+class CeilingFan {
+    private String speed;
+    
+    public void setSpeed(String speed) {
+        this.speed = speed;
+        System.out.println("Ceiling fan speed set to: " + speed);
+    }
+
+    public void off() {
+        speed = "OFF";
+        System.out.println("Ceiling fan is OFF");
+    }
+
+    public String getSpeed() {
+        return speed;
+    }
+}
+
+// Concrete Command to turn the fan on and set speed to HIGH
+class CeilingFanHighCommand implements Command {
+    private CeilingFan fan;
+    private String previousSpeed;
+    
+    public CeilingFanHighCommand(CeilingFan fan) {
+        this.fan = fan;
+    }
+
+    @Override
+    public void execute() {
+        previousSpeed = fan.getSpeed();
+        fan.setSpeed("HIGH");
+    }
+
+    @Override
+    public void undo() {
+        fan.setSpeed(previousSpeed);
+    }
+}
+
+// Concrete Command to turn the fan on and set speed to MEDIUM
+class CeilingFanMediumCommand implements Command {
+    private CeilingFan fan;
+    private String previousSpeed;
+    
+    public CeilingFanMediumCommand(CeilingFan fan) {
+        this.fan = fan;
+    }
+
+    @Override
+    public void execute() {
+        previousSpeed = fan.getSpeed();
+        fan.setSpeed("MEDIUM");
+    }
+
+    @Override
+    public void undo() {
+        fan.setSpeed(previousSpeed);
+    }
+}
+
+// Concrete Command to turn the fan off
+class CeilingFanOffCommand implements Command {
+    private CeilingFan fan;
+    private String previousSpeed;
+    
+    public CeilingFanOffCommand(CeilingFan fan) {
+        this.fan = fan;
+    }
+
+    @Override
+    public void execute() {
+        previousSpeed = fan.getSpeed();
+        fan.off();
+    }
+
+    @Override
+    public void undo() {
+        fan.setSpeed(previousSpeed);
+    }
+}
+
+// Remote Control (Invoker)
+class RemoteControl {
+    private Command currentCommand;
+    
+    public void setCommand(Command command) {
+        currentCommand = command;
+    }
+    
+    public void pressButton() {
+        currentCommand.execute();
+    }
+    
+    public void pressUndo() {
+        currentCommand.undo();
+    }
+}
+
+public class UndoCommandTest {
+    public static void main(String[] args) {
+        CeilingFan ceilingFan = new CeilingFan();
+        
+        Command fanHigh = new CeilingFanHighCommand(ceilingFan);
+        Command fanMedium = new CeilingFanMediumCommand(ceilingFan);
+        Command fanOff = new CeilingFanOffCommand(ceilingFan);
+        
+        RemoteControl remote = new RemoteControl();
+        
+        // Turn fan on to high speed
+        remote.setCommand(fanHigh);
+        remote.pressButton();
+        
+        // Undo the high speed setting (turn off the fan)
+        remote.pressUndo();
+        
+        // Set the fan to medium speed
+        remote.setCommand(fanMedium);
+        remote.pressButton();
+        
+        // Undo the medium speed setting (turn off the fan)
+        remote.pressUndo();
+        
+        // Turn the fan off
+        remote.setCommand(fanOff);
+        remote.pressButton();
+        
+        // Undo turning off the fan (restore previous speed)
+        remote.pressUndo();
+    }
+}
+```
+
+### Explanation:
+1. **Receiver (CeilingFan)**: The `CeilingFan` class has methods to set speeds and turn off the fan.
+2. **Command Interface**: The `Command` interface defines methods for `execute()` and `undo()`.
+3. **Concrete Command**: 
+   - `CeilingFanHighCommand`, `CeilingFanMediumCommand`, and `CeilingFanOffCommand` encapsulate the actions that can be executed on the ceiling fan and provide the `undo` functionality to restore the previous state.
+4. **Invoker (RemoteControl)**: The `RemoteControl` class holds and invokes commands, and also supports undoing the last action.
+
+### Output (Example):
+```
+Ceiling fan speed set to: HIGH
+Ceiling fan is OFF
+Ceiling fan speed set to: MEDIUM
+Ceiling fan is OFF
+Ceiling fan speed set to: OFF
+Ceiling fan speed set to: MEDIUM
+```
+
+---
+
+### Q.2 Program for LDR to Vary the Light Intensity of LED Using Arduino
+
+An **LDR (Light Dependent Resistor)** is a resistor whose resistance decreases as the light intensity increases. We can use an LDR to vary the brightness of an **LED** based on the ambient light.
+
+#### Components:
+1. **LDR**: A light sensor that changes its resistance based on light intensity.
+2. **LED**: The output device that will change its brightness.
+3. **Arduino**: To control the LED based on the LDR’s readings.
+
+#### Circuit Setup:
+1. **LDR**: Connect one leg of the LDR to **5V** and the other to **Analog Pin A0** and ground it via a **10kΩ resistor**.
+2. **LED**: Connect the **positive leg (anode)** to **Digital Pin 9** and the **negative leg (cathode)** to **GND**.
+
+#### Arduino Code:
+
+```cpp
+const int ldrPin = A0;  // Pin where the LDR is connected
+const int ledPin = 9;   // Pin where the LED is connected
+
+void setup() {
+  pinMode(ledPin, OUTPUT); // Set LED pin as output
+  Serial.begin(9600); // Start serial communication
+}
+
+void loop() {
+  // Read the value from the LDR (range 0 to 1023)
+  int ldrValue = analogRead(ldrPin);
+
+  // Map the LDR value to the range of 0 to 255 (PWM range for LED)
+  int brightness = map(ldrValue, 0, 1023, 0, 255);
+
+  // Set the brightness of the LED based on LDR value
+  analogWrite(ledPin, brightness);
+
+  // Print the LDR value and LED brightness for monitoring
+  Serial.print("LDR Value: ");
+  Serial.print(ldrValue);
+  Serial.print("  LED Brightness: ");
+  Serial.println(brightness);
+
+  delay(100); // Small delay to avoid overloading the serial output
+}
+```
+
+### Explanation:
+1. **LDR Pin (A0)**: The LDR is connected to **Analog Pin A0**, and the `analogRead()` function reads the light intensity as a value between 0 and 1023.
+2. **LED Pin (9)**: The LED is connected to **Digital Pin 9**. The `analogWrite()` function is used to control the brightness of the LED based on the LDR reading, mapping it to the range of 0 to 255 (for PWM).
+3. **Serial Monitor**: The LDR value and the LED brightness are printed to the Serial Monitor for monitoring purposes.
+
+### Key Notes:
+- The brightness of the LED will vary depending on the amount of light the LDR is exposed to.
+- If the LDR is exposed to more light, the LED will become brighter (the brightness will increase).
+- The **`map()`** function is used to convert the LDR’s reading (0 to 1023) to a value suitable for controlling the LED's brightness (0 to 255).
+
+### Output:
+- As the ambient light changes, you will see the LED's brightness adjusting accordingly. This change can be monitored via the Serial Monitor.
+
+---
+
+These two solutions should meet your requirements for implementing an **undo command** for a ceiling fan and controlling an LED's intensity based on LDR readings. Let me know if you need further help!

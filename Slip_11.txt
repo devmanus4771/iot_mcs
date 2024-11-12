@@ -1,0 +1,217 @@
+### Q. 1: Java Program to Implement Adapter Pattern to Design Heart Model to Beat Model
+
+The **Adapter Pattern** is a structural design pattern that allows incompatible interfaces to work together by converting one interface into another. In this case, we can design a **Heart Model** that needs to use the **Beat Model** but the interfaces of the two models are incompatible. We will implement an adapter class to adapt the **Heart Model** to be able to use the **Beat Model**.
+
+#### Steps for Implementation:
+1. Define the `HeartModel` interface.
+2. Define the `BeatModel` interface (this will have the behavior we want to adapt to).
+3. Implement the **Adapter** class that adapts the **HeartModel** to the **BeatModel**.
+4. Implement the **HeartModel** class and the **BeatModel** class.
+5. Use the Adapter to connect the two models.
+
+---
+
+#### Java Code Implementation:
+
+**1. `HeartModel` Interface**
+
+```java
+interface HeartModel {
+    void beat(); // Method to simulate a heartbeat
+}
+```
+
+**2. `BeatModel` Interface**
+
+```java
+interface BeatModel {
+    void playBeat(); // Method to simulate playing a beat
+}
+```
+
+**3. Concrete `HeartModel` Class**
+
+```java
+class Heart implements HeartModel {
+    @Override
+    public void beat() {
+        System.out.println("Heart is beating...");
+    }
+}
+```
+
+**4. Concrete `BeatModel` Class**
+
+```java
+class Beat implements BeatModel {
+    @Override
+    public void playBeat() {
+        System.out.println("Playing a beat...");
+    }
+}
+```
+
+**5. Adapter Class**
+
+```java
+class HeartToBeatAdapter implements BeatModel {
+    private HeartModel heartModel;
+
+    public HeartToBeatAdapter(HeartModel heartModel) {
+        this.heartModel = heartModel;
+    }
+
+    @Override
+    public void playBeat() {
+        // Convert the HeartModel beat to BeatModel playBeat
+        heartModel.beat();
+    }
+}
+```
+
+**6. Main Class to Test the Adapter Pattern**
+
+```java
+public class AdapterPatternTest {
+    public static void main(String[] args) {
+        HeartModel heart = new Heart();
+        BeatModel beat = new Beat();
+        
+        System.out.println("Using HeartModel:");
+        heart.beat(); // Heart model
+
+        System.out.println("\nUsing BeatModel:");
+        beat.playBeat(); // Beat model
+        
+        // Using Adapter to convert HeartModel to BeatModel
+        BeatModel heartAdapter = new HeartToBeatAdapter(heart);
+        System.out.println("\nUsing Adapter to convert HeartModel to BeatModel:");
+        heartAdapter.playBeat(); // Using the adapter
+    }
+}
+```
+
+#### Explanation:
+- **`HeartModel` Interface** defines the `beat()` method, simulating a heartbeat.
+- **`BeatModel` Interface** defines the `playBeat()` method, simulating a beat.
+- **`Heart`** is a concrete implementation of the `HeartModel`.
+- **`Beat`** is a concrete implementation of the `BeatModel`.
+- **`HeartToBeatAdapter`** is the adapter that converts the `HeartModel` (which has a `beat()` method) into a `BeatModel` (which uses the `playBeat()` method).
+- In the **`AdapterPatternTest`** class, we test the **HeartModel** and **BeatModel** independently and then demonstrate how the **HeartToBeatAdapter** allows us to use the **HeartModel** as if it were a **BeatModel**.
+
+#### Output Example:
+```
+Using HeartModel:
+Heart is beating...
+
+Using BeatModel:
+Playing a beat...
+
+Using Adapter to convert HeartModel to BeatModel:
+Heart is beating...
+```
+
+---
+
+### Q. 2: Python Programs on Raspberry Pi
+
+Here are the Python programs to complete the tasks on Raspberry Pi:
+
+#### a) **Light an LED through Python Program**
+
+You can use the Raspberry Pi GPIO pins to control an LED. Here's a simple program to light an LED connected to GPIO pin 17.
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+# Setup
+GPIO.setmode(GPIO.BCM)  # Use Broadcom pin-numbering
+GPIO.setup(17, GPIO.OUT)  # Set GPIO pin 17 as an output
+
+# Turn the LED on
+GPIO.output(17, GPIO.HIGH)
+
+# Wait for 2 seconds
+time.sleep(2)
+
+# Turn the LED off
+GPIO.output(17, GPIO.LOW)
+
+# Cleanup
+GPIO.cleanup()
+```
+
+#### b) **Get Input from Two Switches and Switch on Corresponding LEDs**
+
+This program reads input from two switches connected to GPIO pins 18 and 23, and switches on corresponding LEDs connected to GPIO pins 24 and 25.
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+# Setup GPIO pins
+GPIO.setmode(GPIO.BCM)
+
+# Switches as input
+GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Switch 1
+GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Switch 2
+
+# LEDs as output
+GPIO.setup(24, GPIO.OUT)  # LED for switch 1
+GPIO.setup(25, GPIO.OUT)  # LED for switch 2
+
+try:
+    while True:
+        # Read the switches (LOW means pressed, HIGH means not pressed)
+        switch1_state = GPIO.input(18)
+        switch2_state = GPIO.input(23)
+
+        # Control LEDs based on switch states
+        GPIO.output(24, GPIO.LOW if switch1_state == GPIO.HIGH else GPIO.HIGH)  # LED 1
+        GPIO.output(25, GPIO.LOW if switch2_state == GPIO.HIGH else GPIO.HIGH)  # LED 2
+
+        time.sleep(0.1)  # Small delay to debounce switches
+finally:
+    GPIO.cleanup()
+```
+
+#### c) **Flash an LED at a Given On Time and Off Time Cycle, Where the Two Times Are Taken from a File**
+
+Assuming the file `times.txt` contains two lines: the first line is the LED on-time, and the second line is the off-time in seconds.
+
+```python
+import RPi.GPIO as GPIO
+import time
+
+# Setup GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17, GPIO.OUT)  # LED on pin 17
+
+# Read on-time and off-time from file
+try:
+    with open("times.txt", "r") as file:
+        on_time = float(file.readline().strip())  # Read and convert on-time
+        off_time = float(file.readline().strip())  # Read and convert off-time
+except FileNotFoundError:
+    print("Error: times.txt file not found.")
+    GPIO.cleanup()
+    exit()
+
+# Flash the LED with the specified cycle
+try:
+    while True:
+        GPIO.output(17, GPIO.HIGH)  # Turn LED on
+        time.sleep(on_time)         # Wait for the on-time
+        GPIO.output(17, GPIO.LOW)   # Turn LED off
+        time.sleep(off_time)        # Wait for the off-time
+finally:
+    GPIO.cleanup()
+```
+
+### Explanation:
+1. **Program (a)**: Lights an LED for 2 seconds and then turns it off using Raspberry Pi's GPIO.
+2. **Program (b)**: Reads input from two switches and controls two LEDs. When a switch is pressed (connected to `GPIO.IN`), the corresponding LED turns on.
+3. **Program (c)**: Flashes an LED with an on-time and off-time cycle. The cycle times are read from a file (`times.txt`), where the first line represents the on-time and the second line represents the off-time.
+
+These programs assume that you're using Raspberry Pi with the **RPi.GPIO** library installed, which is typically available in the default Raspberry Pi environment. You can install the library using `sudo apt-get install python3-rpi.gpio`.

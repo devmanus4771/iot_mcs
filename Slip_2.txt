@@ -1,0 +1,150 @@
+### **Slip 2:**
+
+### **Q.1 Java Program - Singleton Pattern for Multithreading**
+
+#### **Code:**
+```java
+// Singleton class implementation
+class Singleton {
+    private static Singleton instance;
+
+    // Private constructor to prevent instantiation
+    private Singleton() {}
+
+    // Synchronized method to control simultaneous access
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    // Method to display a message
+    public void showMessage() {
+        System.out.println("Singleton Instance: Hello from Singleton!");
+    }
+}
+
+// Main class to test Singleton in a multithreaded environment
+public class SingletonTest {
+    public static void main(String[] args) {
+        // Creating multiple threads to test Singleton instance
+        Thread thread1 = new Thread(() -> {
+            Singleton singleton = Singleton.getInstance();
+            singleton.showMessage();
+        });
+
+        Thread thread2 = new Thread(() -> {
+            Singleton singleton = Singleton.getInstance();
+            singleton.showMessage();
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+```
+
+#### **Steps to Run**:
+1. **Save the Code**:
+   - Save the above code in a file named `SingletonTest.java`.
+   
+2. **Compile and Run**:
+   - Open the terminal and navigate to the folder containing the file.
+   - Compile using: `javac SingletonTest.java`.
+   - Run the program using: `java SingletonTest`.
+
+3. **Output**:
+   - The output will show the Singleton instance message from both threads:
+     ```
+     Singleton Instance: Hello from Singleton!
+     Singleton Instance: Hello from Singleton!
+     ```
+   - This confirms that the same instance is shared across multiple threads.
+
+---
+
+### **Q.2 Arduino Program - Measure Distance using Ultrasonic Sensor and Blink LED**
+
+#### **Components Required**:
+1. **Arduino UNO**.
+2. **HC-SR04 Ultrasonic Sensor**.
+3. **LED**.
+4. **Resistor (220 ohms)**.
+5. **Proteus Software** for simulation.
+
+#### **Proteus Simulation Setup**:
+1. **Open Proteus** and create a new project.
+2. **Add Components**:
+   - Add `Arduino UNO`, `HC-SR04 Ultrasonic Sensor`, and an `LED`.
+3. **Wiring**:
+   - Connect the `VCC` and `GND` of the ultrasonic sensor to `5V` and `GND` of Arduino.
+   - Connect `Trig` to pin `9` and `Echo` to pin `10` of Arduino.
+   - Connect the `LED` to pin `13` of Arduino through a 220-ohm resistor to ground.
+
+#### **Code:**
+```cpp
+// Define pins for the ultrasonic sensor and LED
+const int trigPin = 9;
+const int echoPin = 10;
+const int ledPin = 13;
+
+long duration;
+int distance;
+
+void setup() {
+    // Set up pins and initialize serial communication
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
+    pinMode(ledPin, OUTPUT);
+    Serial.begin(9600);
+}
+
+void loop() {
+    // Clear the trigPin by setting it LOW
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+
+    // Set the trigPin HIGH for 10 microseconds
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+
+    // Read the echoPin and calculate the distance
+    duration = pulseIn(echoPin, HIGH);
+    distance = duration * 0.034 / 2; // Convert time to distance
+
+    // Print the distance to the Serial Monitor
+    Serial.print("Distance: ");
+    Serial.print(distance);
+    Serial.println(" cm");
+
+    // Blink the LED if an object is detected within 20 cm
+    if (distance < 20) {
+        digitalWrite(ledPin, HIGH); // Turn LED ON
+    } else {
+        digitalWrite(ledPin, LOW);  // Turn LED OFF
+    }
+    delay(500); // Wait for half a second
+}
+```
+
+#### **Steps to Run in Proteus**:
+1. **Upload the Code**:
+   - Open the Arduino IDE, select `Arduino UNO` as the board, and upload the code.
+   
+2. **Simulation**:
+   - In Proteus, open the saved project and start the simulation by clicking on the "Play" button.
+   - The LED will blink if an object is detected within 20 cm of the ultrasonic sensor.
+   
+3. **Expected Output**:
+   - The Serial Monitor will display the distance measured:
+     ```
+     Distance: 15 cm
+     Distance: 35 cm
+     ```
+   - If the distance is less than 20 cm, the LED will turn on. Otherwise, it will remain off.
+
+---
+
+Let me know when you're ready for the next slip!

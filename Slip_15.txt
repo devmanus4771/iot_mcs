@@ -1,0 +1,232 @@
+### Q. 1: Java Program to Implement Facade Design Pattern for Home Theater
+
+The **Facade Design Pattern** is a structural pattern that provides a simplified interface to a complex subsystem. It helps in making a system easier to use by providing a higher-level interface that hides the complexities of the subsystem.
+
+In this example, we will implement a **Home Theater** system with components like a **Projector**, **DVD Player**, **Lights**, and **SoundSystem**. The `HomeTheaterFacade` class will serve as the facade that simplifies the interaction with these components.
+
+---
+
+#### Java Code Implementation:
+
+**1. Component Classes** (these represent the subsystems in the home theater)
+
+```java
+// Projector class
+class Projector {
+    public void on() {
+        System.out.println("Projector is on");
+    }
+
+    public void off() {
+        System.out.println("Projector is off");
+    }
+
+    public void setInput(String input) {
+        System.out.println("Projector input set to: " + input);
+    }
+}
+
+// DVD Player class
+class DVDPlayer {
+    public void on() {
+        System.out.println("DVD Player is on");
+    }
+
+    public void off() {
+        System.out.println("DVD Player is off");
+    }
+
+    public void play(String movie) {
+        System.out.println("DVD Player is playing: " + movie);
+    }
+
+    public void stop() {
+        System.out.println("DVD Player stopped");
+    }
+}
+
+// Lights class
+class Lights {
+    public void dim(int level) {
+        System.out.println("Lights dimmed to " + level + "%");
+    }
+
+    public void on() {
+        System.out.println("Lights on");
+    }
+}
+
+// SoundSystem class
+class SoundSystem {
+    public void on() {
+        System.out.println("Sound system is on");
+    }
+
+    public void off() {
+        System.out.println("Sound system is off");
+    }
+
+    public void setVolume(int volume) {
+        System.out.println("Sound system volume set to " + volume);
+    }
+}
+```
+
+**2. Facade Class** (this class provides a simplified interface)
+
+```java
+class HomeTheaterFacade {
+    private Projector projector;
+    private DVDPlayer dvdPlayer;
+    private Lights lights;
+    private SoundSystem soundSystem;
+
+    public HomeTheaterFacade(Projector projector, DVDPlayer dvdPlayer, Lights lights, SoundSystem soundSystem) {
+        this.projector = projector;
+        this.dvdPlayer = dvdPlayer;
+        this.lights = lights;
+        this.soundSystem = soundSystem;
+    }
+
+    public void watchMovie(String movie) {
+        System.out.println("Get ready to watch a movie...");
+        lights.dim(10); // Dim the lights to 10%
+        projector.on();
+        projector.setInput("DVD");
+        soundSystem.on();
+        soundSystem.setVolume(50);
+        dvdPlayer.on();
+        dvdPlayer.play(movie);
+    }
+
+    public void endMovie() {
+        System.out.println("Shutting down the home theater...");
+        lights.on(); // Turn on the lights
+        projector.off();
+        soundSystem.off();
+        dvdPlayer.stop();
+        dvdPlayer.off();
+    }
+}
+```
+
+**3. Main Class to Test the Facade Pattern**
+
+```java
+public class HomeTheaterFacadeTest {
+    public static void main(String[] args) {
+        // Create subsystems (components)
+        Projector projector = new Projector();
+        DVDPlayer dvdPlayer = new DVDPlayer();
+        Lights lights = new Lights();
+        SoundSystem soundSystem = new SoundSystem();
+
+        // Create the facade
+        HomeTheaterFacade homeTheater = new HomeTheaterFacade(projector, dvdPlayer, lights, soundSystem);
+
+        // Watch a movie
+        homeTheater.watchMovie("The Dark Knight");
+
+        // End the movie and shutdown the system
+        homeTheater.endMovie();
+    }
+}
+```
+
+#### Explanation:
+1. **Subsystem Classes**: These represent the various components of the home theater system, such as the `Projector`, `DVDPlayer`, `Lights`, and `SoundSystem`.
+2. **Facade Class (`HomeTheaterFacade`)**: This class simplifies the interaction with the subsystems. It provides two main methods:
+   - `watchMovie(String movie)`: It sets up all the components to watch a movie (turning on the projector, dimming the lights, setting the DVD input, playing the movie, etc.).
+   - `endMovie()`: It shuts down all components (turns off the projector, stops the DVD, turns the lights back on, etc.).
+3. **Main Class**: In the `HomeTheaterFacadeTest` class, the subsystems are instantiated, and the facade is used to operate the entire home theater system through a simplified interface.
+
+#### Output Example:
+```
+Get ready to watch a movie...
+Lights dimmed to 10%
+Projector is on
+Projector input set to: DVD
+Sound system is on
+Sound system volume set to 50
+DVD Player is on
+DVD Player is playing: The Dark Knight
+
+Shutting down the home theater...
+Lights on
+Projector is off
+Sound system is off
+DVD Player stopped
+DVD Player off
+```
+
+---
+
+### Q. 2: Arduino Program to Detect a Finger Using a Capacitive Touch Sensor
+
+We will use a **capacitive touch sensor** (e.g., TTP223 or similar) to detect when a finger is placed on the sensor. When a finger touches the sensor, an LED will light up.
+
+#### Hardware Required:
+1. **Capacitive Touch Sensor** (TTP223 or similar)
+2. **LED**
+3. **Resistor** (220 ohms for the LED)
+4. **Jumper Wires**
+5. **Arduino Board** (e.g., Arduino Uno)
+
+#### Wiring:
+- **Capacitive Touch Sensor:**
+  - VCC → 5V
+  - GND → GND
+  - OUT → Pin 2 (or any other digital pin)
+
+- **LED:**
+  - Anode (long leg) → Pin 13 (or any other digital pin)
+  - Cathode (short leg) → GND (with a 220-ohm resistor in series)
+
+#### Arduino Code:
+
+```cpp
+const int touchSensorPin = 2; // Touch sensor connected to pin 2
+const int ledPin = 13;        // LED connected to pin 13
+
+void setup() {
+  // Initialize the touch sensor pin as input
+  pinMode(touchSensorPin, INPUT);
+  
+  // Initialize the LED pin as output
+  pinMode(ledPin, OUTPUT);
+  
+  // Start serial communication for debugging
+  Serial.begin(9600);
+}
+
+void loop() {
+  int sensorValue = digitalRead(touchSensorPin); // Read the touch sensor
+
+  // Print the sensor value to Serial Monitor for debugging
+  Serial.println(sensorValue);
+
+  if (sensorValue == HIGH) {
+    // If the touch sensor is triggered (finger placed), turn on the LED
+    digitalWrite(ledPin, HIGH);
+  } else {
+    // If no touch detected, turn off the LED
+    digitalWrite(ledPin, LOW);
+  }
+
+  delay(100); // Small delay for stability
+}
+```
+
+#### Explanation:
+1. **Capacitive Touch Sensor**: The sensor detects touch when a finger is placed on it, outputting a HIGH signal when touched and a LOW signal when not touched.
+2. **LED Control**: The program turns on the LED when the sensor is touched and turns off the LED when no touch is detected.
+3. **Serial Monitor**: The sensor's state (HIGH or LOW) is printed to the Serial Monitor for debugging purposes.
+
+#### Output:
+- When the sensor detects a touch, the LED turns ON.
+- When there is no touch, the LED stays OFF.
+- The Serial Monitor will show `1` when the sensor is touched and `0` when it is not.
+
+---
+
+Let me know if you need further assistance or clarification!

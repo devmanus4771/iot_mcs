@@ -1,0 +1,239 @@
+### Q. 1: Java Program to Implement Observer Design Pattern for Number Conversion
+
+The **Observer Design Pattern** is a behavioral pattern where one object (the subject) maintains a list of observers and notifies them of any state changes. In this case, the number in decimal is the subject, and the observers will be the representations of that number in different formats: **Hexadecimal**, **Octal**, and **Binary**.
+
+When the decimal number changes, the observers will reflect the new value automatically.
+
+---
+
+#### Java Code Implementation:
+
+**1. `Observer` Interface**: This defines the `update()` method that all observers will implement.
+
+```java
+interface Observer {
+    void update(int decimalNumber);
+}
+```
+
+**2. `Subject` Interface**: This defines methods for attaching, detaching, and notifying observers.
+
+```java
+interface Subject {
+    void attach(Observer observer);
+    void detach(Observer observer);
+    void notifyObservers();
+}
+```
+
+**3. Concrete Subject (`DecimalNumber`)**: This is the subject that holds the decimal number and notifies observers when the number changes.
+
+```java
+class DecimalNumber implements Subject {
+    private int decimalNumber;
+    private List<Observer> observers;
+
+    public DecimalNumber() {
+        observers = new ArrayList<>();
+    }
+
+    public void setDecimalNumber(int decimalNumber) {
+        this.decimalNumber = decimalNumber;
+        notifyObservers();
+    }
+
+    public int getDecimalNumber() {
+        return decimalNumber;
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer observer : observers) {
+            observer.update(decimalNumber);
+        }
+    }
+}
+```
+
+**4. Concrete Observers**: These are the observers that represent the number in different formats.
+
+```java
+// Hexadecimal representation
+class HexadecimalObserver implements Observer {
+    private DecimalNumber decimalNumber;
+
+    public HexadecimalObserver(DecimalNumber decimalNumber) {
+        this.decimalNumber = decimalNumber;
+        decimalNumber.attach(this); // Register as observer
+    }
+
+    @Override
+    public void update(int decimalNumber) {
+        System.out.println("Hexadecimal: " + Integer.toHexString(decimalNumber).toUpperCase());
+    }
+}
+
+// Octal representation
+class OctalObserver implements Observer {
+    private DecimalNumber decimalNumber;
+
+    public OctalObserver(DecimalNumber decimalNumber) {
+        this.decimalNumber = decimalNumber;
+        decimalNumber.attach(this); // Register as observer
+    }
+
+    @Override
+    public void update(int decimalNumber) {
+        System.out.println("Octal: " + Integer.toOctalString(decimalNumber));
+    }
+}
+
+// Binary representation
+class BinaryObserver implements Observer {
+    private DecimalNumber decimalNumber;
+
+    public BinaryObserver(DecimalNumber decimalNumber) {
+        this.decimalNumber = decimalNumber;
+        decimalNumber.attach(this); // Register as observer
+    }
+
+    @Override
+    public void update(int decimalNumber) {
+        System.out.println("Binary: " + Integer.toBinaryString(decimalNumber));
+    }
+}
+```
+
+**5. Main Class to Test the Observer Pattern**
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ObserverPatternTest {
+    public static void main(String[] args) {
+        // Create the DecimalNumber object (subject)
+        DecimalNumber decimalNumber = new DecimalNumber();
+
+        // Create the observers and attach them to the subject
+        HexadecimalObserver hexObserver = new HexadecimalObserver(decimalNumber);
+        OctalObserver octalObserver = new OctalObserver(decimalNumber);
+        BinaryObserver binaryObserver = new BinaryObserver(decimalNumber);
+
+        // Change the decimal number, which will notify all observers
+        System.out.println("Setting decimal number to 255");
+        decimalNumber.setDecimalNumber(255);  // This will notify all observers
+
+        System.out.println("\nSetting decimal number to 1024");
+        decimalNumber.setDecimalNumber(1024);  // This will notify all observers
+
+        // Detach an observer
+        decimalNumber.detach(hexObserver);
+        System.out.println("\nDetached Hexadecimal Observer");
+
+        System.out.println("\nSetting decimal number to 500");
+        decimalNumber.setDecimalNumber(500);  // Only Octal and Binary observers will be notified
+    }
+}
+```
+
+#### Explanation:
+1. **Observer Interface**: Defines the `update()` method, which is called when the state of the subject changes.
+2. **Subject Interface**: Contains methods to attach, detach, and notify observers.
+3. **DecimalNumber**: The subject that holds the decimal value and notifies observers (Hexadecimal, Octal, Binary) whenever it changes.
+4. **Observers**: Concrete classes (`HexadecimalObserver`, `OctalObserver`, `BinaryObserver`) that represent the number in different formats. They update themselves whenever the decimal number changes.
+5. **Main Class**: Creates a `DecimalNumber` object, attaches observers, changes the decimal number, and displays the updated values in Hexadecimal, Octal, and Binary formats.
+
+#### Output Example:
+```
+Setting decimal number to 255
+Hexadecimal: FF
+Octal: 377
+Binary: 11111111
+
+Setting decimal number to 1024
+Hexadecimal: 400
+Octal: 2000
+Binary: 10000000000
+
+Detached Hexadecimal Observer
+
+Setting decimal number to 500
+Octal: 764
+Binary: 111110100
+```
+
+---
+
+### Q. 2: Arduino Program to Connect with Available Wi-Fi Network
+
+To connect an Arduino to a Wi-Fi network, you can use an **ESP8266 Wi-Fi module** or **ESP32**. Here's an example for an **ESP8266** module using the **ESP8266WiFi** library.
+
+#### Hardware Required:
+1. **ESP8266 Wi-Fi Module** (or ESP32 if you prefer)
+2. **Arduino Board** (e.g., Arduino Uno)
+
+#### Wiring:
+- **ESP8266/ESP32** uses **Serial Communication** to communicate with Arduino.
+- You may need to use **SoftwareSerial** if you're using an Arduino Uno.
+
+#### Arduino Code (ESP8266 Example):
+
+```cpp
+#include <ESP8266WiFi.h>
+
+const char* ssid = "your_network_SSID";    // Wi-Fi SSID
+const char* password = "your_password";    // Wi-Fi Password
+
+void setup() {
+  Serial.begin(115200);  // Start serial communication
+
+  // Connect to Wi-Fi
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting to WiFi...");
+  
+  // Wait for the connection to establish
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000); // Wait for 1 second
+    Serial.print(".");
+  }
+
+  // Once connected, print the IP address
+  Serial.println();
+  Serial.println("Connected to WiFi!");
+  Serial.print("IP Address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  // Nothing to do here, just keep the connection active
+}
+```
+
+#### Explanation:
+1. **Wi-Fi Credentials**: Replace `"your_network_SSID"` and `"your_password"` with your actual Wi-Fi network credentials.
+2. **ESP8266WiFi Library**: This library is used to manage Wi-Fi connections with the ESP8266 module.
+3. **Connection Logic**: The `WiFi.begin()` function initiates the connection, and we use a `while` loop to check the connection status (`WL_CONNECTED`). The `Serial.println(WiFi.localIP())` prints the assigned IP address once the device is connected.
+4. **Serial Monitor**: Once the device is connected, the IP address will be printed in the Serial Monitor.
+
+#### Output:
+```
+Connecting to WiFi...
+....
+Connected to WiFi!
+IP Address: 192.168.1.123  // This will vary based on your network
+```
+
+---
+
+Let me know if you need further help or clarification!

@@ -1,0 +1,209 @@
+### Q. 1: Java Program to Implement Adapter Design Pattern for Mobile Charger (Using Class Adapter)
+
+The **Adapter Pattern** allows an object to interact with another object with a different interface. The **Class Adapter** implements the interface of the class that is to be adapted and provides the necessary methods to convert the calls into the desired format.
+
+#### Problem Breakdown:
+- **Volt**: A class that measures voltage.
+- **Socket**: A class that produces a constant voltage of 120V.
+- We will create an **Adapter** that allows the socket to produce voltages of 3V, 12V, and the default 120V.
+
+#### Steps for Implementation:
+1. **Create a `Volt` class** that represents voltage.
+2. **Create a `Socket` class** that outputs a constant voltage of 120V.
+3. **Create an `Adapter` class** (using class adapter) to convert voltages to different levels (3V, 12V, or 120V).
+4. **Test the implementation**.
+
+---
+
+#### Java Code Implementation:
+
+**1. `Volt` Class**
+
+```java
+class Volt {
+    private int volts;
+
+    public Volt(int volts) {
+        this.volts = volts;
+    }
+
+    public int getVolts() {
+        return volts;
+    }
+
+    public void setVolts(int volts) {
+        this.volts = volts;
+    }
+}
+```
+
+**2. `Socket` Class**
+
+```java
+class Socket {
+    public Volt getVolt() {
+        return new Volt(120); // Socket provides 120 volts
+    }
+}
+```
+
+**3. `Adapter` Class (Class Adapter)**
+
+We will use **inheritance** in the Adapter class to extend the `Socket` class and provide the conversion functionality.
+
+```java
+class SocketAdapter extends Socket {
+    public Volt get3Volt() {
+        Volt v = getVolt();
+        return convertVolt(v, 40); // Convert 120V to 3V
+    }
+
+    public Volt get12Volt() {
+        Volt v = getVolt();
+        return convertVolt(v, 10); // Convert 120V to 12V
+    }
+
+    public Volt get120Volt() {
+        return getVolt(); // No conversion needed for 120V
+    }
+
+    // Method to convert voltage from one level to another
+    private Volt convertVolt(Volt v, int factor) {
+        return new Volt(v.getVolts() / factor);
+    }
+}
+```
+
+**4. Main Class to Test the Adapter Pattern**
+
+```java
+public class AdapterPatternTest {
+    public static void main(String[] args) {
+        Socket socket = new Socket(); // Socket that produces 120V
+        SocketAdapter adapter = new SocketAdapter();
+
+        // Testing different voltages using the adapter
+        System.out.println("Socket voltage: " + socket.getVolt().getVolts() + "V");
+        
+        System.out.println("3V Adapter: " + adapter.get3Volt().getVolts() + "V");
+        System.out.println("12V Adapter: " + adapter.get12Volt().getVolts() + "V");
+        System.out.println("120V Adapter: " + adapter.get120Volt().getVolts() + "V");
+    }
+}
+```
+
+#### Explanation:
+1. **Volt Class**: Represents a voltage value and encapsulates it with getter and setter methods.
+2. **Socket Class**: Provides a default 120V output.
+3. **SocketAdapter Class**: This class extends `Socket` and provides methods to convert the 120V output into 3V, 12V, or retain the 120V using the `get3Volt()`, `get12Volt()`, and `get120Volt()` methods.
+4. The conversion logic is implemented in the `convertVolt()` method, which divides the input voltage by a factor (e.g., 40 to get 3V from 120V).
+5. The **AdapterPatternTest** class demonstrates how the adapter works.
+
+#### Output Example:
+```
+Socket voltage: 120V
+3V Adapter: 3V
+12V Adapter: 12V
+120V Adapter: 120V
+```
+
+---
+
+### Q. 2: Arduino Program to Measure Distance Using Ultrasonic Sensor and Make LED Blink
+
+In this task, we will use an **Ultrasonic Sensor (HC-SR04)** to measure distance and blink an LED accordingly. The distance will determine how quickly the LED blinks. The shorter the distance, the faster the LED blinks.
+
+#### Hardware Required:
+1. **Ultrasonic Sensor** (HC-SR04)
+2. **LED** (connected to a digital pin)
+3. **Resistor** (for the LED)
+4. **Jumper Wires**
+5. **Arduino board** (e.g., Arduino Uno)
+
+#### Wiring:
+- **Ultrasonic Sensor:**
+  - VCC → 5V
+  - GND → GND
+  - Trigger → Pin 9
+  - Echo → Pin 10
+- **LED:**
+  - Anode (long leg) → Pin 13 (or any other digital pin)
+  - Cathode (short leg) → GND (with a 220-ohm resistor in series)
+
+#### Arduino Code:
+
+```cpp
+// Define pins for Ultrasonic sensor and LED
+const int trigPin = 9;
+const int echoPin = 10;
+const int ledPin = 13;
+
+void setup() {
+  // Initialize serial communication
+  Serial.begin(9600);
+  
+  // Set up the ultrasonic sensor pins
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+  // Set up the LED pin
+  pinMode(ledPin, OUTPUT);
+}
+
+void loop() {
+  // Send a pulse to the trigger pin to start the ultrasonic sensor
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Measure the time it takes for the pulse to return
+  long duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate the distance in cm (speed of sound is 343 m/s)
+  long distance = (duration / 2) / 29.1;
+  
+  // Print the distance to the serial monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  // Control the LED blink rate based on the distance
+  if (distance < 10) {
+    // If the distance is less than 10 cm, blink fast
+    digitalWrite(ledPin, HIGH);
+    delay(100); // 100 ms delay (fast blink)
+    digitalWrite(ledPin, LOW);
+    delay(100);
+  } else if (distance < 20) {
+    // If the distance is between 10 cm and 20 cm, blink medium
+    digitalWrite(ledPin, HIGH);
+    delay(500); // 500 ms delay (medium blink)
+    digitalWrite(ledPin, LOW);
+    delay(500);
+  } else {
+    // If the distance is greater than 20 cm, blink slowly
+    digitalWrite(ledPin, HIGH);
+    delay(1000); // 1000 ms delay (slow blink)
+    digitalWrite(ledPin, LOW);
+    delay(1000);
+  }
+}
+```
+
+#### Explanation:
+1. **Ultrasonic Sensor**: The `pulseIn()` function measures the time it takes for the sound pulse to travel to the object and back. The distance is calculated by dividing the duration by 2 and multiplying it by the speed of sound in cm per microsecond.
+2. **LED Blink Logic**: Based on the measured distance, the LED blinks at different rates. The closer the object, the faster the blink.
+   - If the distance is less than 10 cm, the LED blinks quickly (100 ms).
+   - If the distance is between 10 cm and 20 cm, it blinks at a medium rate (500 ms).
+   - If the distance is more than 20 cm, it blinks slowly (1000 ms).
+3. The **`Serial.begin(9600)`** initializes serial communication, and the measured distance is printed to the Serial Monitor.
+
+#### Output:
+- The LED blinks at varying speeds depending on the distance detected by the ultrasonic sensor.
+- The Serial Monitor will display the current distance in cm.
+
+---
+
+Let me know if you need further assistance or clarification!
